@@ -288,6 +288,33 @@ if (data === 'add_requisites') {
 
 
     if (data.startsWith('deposit_accept:')) {
+      if (!this.isAdmin(ctx)) {
+        await ctx.answerCallbackQuery({ text: 'Недостаточно прав' });
+        return;
+      }
+
+      const depositId = BigInt(data.split(':')[1]);
+      const deposit = await this.prisma.deposit.findUnique({ where: { id: depositId } });
+      if (!deposit) {
+        await ctx.answerCallbackQuery({ text: 'Депозит не найден' });
+        return;
+      }
+      if (deposit.status !== 'pending') {
+        await ctx.answerCallbackQuery({ text: 'Уже обработан' });
+        return;
+      }
+
+      await this.redis.setSession(ctx.from.id, {
+        step: 'admin_deposit_amount',
+        depositId: depositId.toString(),
+      });
+      await ctx.reply(`Введите сумму в рублях для зачисления по депозиту #${deposit.id}:`);
+      await ctx.editMessageText(`⏳ Депозит #${deposit.id}: ожидается сумма от администратора.`);
+      await ctx.answerCallbackQuery({ text: 'Введите сумму в рублях' });
+      return;
+    }
+
+    if (data.startsWith('deposit_accept_legacy:')) {
   const depositId = BigInt(data.split(':')[1]);
 
   const deposit = await this.prisma.deposit.findUnique({
@@ -358,6 +385,10 @@ if (dbUser) {
 }
 
 if (data.startsWith('deposit_reject:')) {
+  if (!this.isAdmin(ctx)) {
+    await ctx.answerCallbackQuery({ text: 'Недостаточно прав' });
+    return;
+  }
   const depositId = BigInt(data.split(':')[1]);
 
   const deposit = await this.prisma.deposit.findUnique({
@@ -782,6 +813,15 @@ if (data.startsWith('delete_card:')) {
 
   private async handleTextMessage(ctx: Context) {
     if (!ctx.from) return;
+
+    if (this.isAdmin(ctx) && ctx.message && 'text' in ctx.message) {
+      const adminSession = await this.redis.getSession(ctx.from.id);
+      if (adminSession?.step === 'admin_deposit_amount') {
+        await this.processAdminDepositAmount(ctx, adminSession, ctx.message.text ?? '');
+        return;
+      }
+    }
+
     const telegramId = ctx.from.id;
     const user = await this.prisma.user.findUnique({ where: { telegramId } });
     if (!user) {
@@ -851,6 +891,75 @@ if (data.startsWith('delete_card:')) {
     }
   }
 
+  private async processAdminDepositAmount(
+    ctx: Context,
+    adminSession: Record<string, unknown>,
+    text: string,
+  ) {
+    const amount = Number(text.trim().replace(',', '.'));
+    const depositIdValue = String(adminSession.depositId ?? '');
+
+    if (!Number.isFinite(amount) || amount <= 0 || !/^\d+(?:[.,]\d{1,2})?$/.test(text.trim())) {
+      await ctx.reply('Введите корректную сумму в рублях, например: 1500 или 1500,50.');
+      return;
+    }
+
+    let depositId: bigint;
+    try {
+      depositId = BigInt(depositIdValue);
+    } catch {
+      await this.redis.clearSession(ctx.from!.id);
+      await ctx.reply('Не удалось определить депозит. Начните обработку заново.');
+      return;
+    }
+
+    const result = await this.prisma.$transaction(async (tx) => {
+      const claimed = await tx.deposit.updateMany({
+        where: { id: depositId, status: 'pending' },
+        data: { status: 'completed', amount },
+      });
+
+      if (claimed.count !== 1) return null;
+
+      const deposit = await tx.deposit.findUniqueOrThrow({
+        where: { id: depositId },
+        include: { user: { select: { telegramId: true } } },
+      });
+
+      await tx.user.update({
+        where: { id: deposit.userId },
+        data: { balance: { increment: amount } },
+      });
+
+      await tx.operation.create({
+        data: {
+          userId: deposit.userId,
+          type: 'deposit',
+          currency: 'RUB',
+          amount,
+          amountRub: amount,
+          status: 'completed',
+          description: `Пополнение по депозиту #${deposit.id}`,
+        },
+      });
+
+      return deposit;
+    });
+
+    await this.redis.clearSession(ctx.from!.id);
+
+    if (!result) {
+      await ctx.reply('Этот депозит уже обработан.');
+      return;
+    }
+
+    await ctx.reply(`✅ На баланс пользователя зачислено ${amount.toFixed(2)} ₽.`);
+    await ctx.api.sendMessage(
+      Number(result.user.telegramId),
+      `✅ Баланс пополнен на ${amount.toFixed(2)} ₽.`,
+    );
+  }
+
   private async registerReferral(payload: string, referredId: bigint) {
     const code = await this.prisma.partnerCode.findUnique({ where: { code: payload } });
     if (!code || code.userId === referredId) return;
@@ -868,6 +977,11 @@ if (data.startsWith('delete_card:')) {
         throw error;
       }
     }
+  }
+
+  private isAdmin(ctx: Context): boolean {
+    const adminId = Number(process.env.ADMIN_TELEGRAM_ID);
+    return Number.isSafeInteger(adminId) && adminId > 0 && ctx.from?.id === adminId;
   }
 
   private parsePositiveInt(value: string | undefined): number | null {
