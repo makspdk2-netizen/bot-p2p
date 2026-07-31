@@ -29,7 +29,6 @@ model User {
   partnerEarnings      PartnerEarning[]
   referralsGiven       ReferredUser[]   @relation("Referrer")
   referralRecord       ReferredUser?    @relation("Referred")
-  supportTickets SupportTicket[]
 
   @@map("users")
 }
