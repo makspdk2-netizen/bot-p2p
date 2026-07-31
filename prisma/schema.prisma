@@ -103,8 +103,24 @@ model SupportTicket {
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  messages  SupportMessage[]
 
   @@map("support_tickets")
+}
+
+model SupportMessage {
+  id             BigInt        @id @default(autoincrement())
+  ticketId       BigInt        @map("ticket_id")
+  senderType     String        @map("sender_type")
+  text           String?
+  mediaType      String?       @map("media_type")
+  fileId         String?       @map("file_id")
+  telegramMsgId  BigInt?       @map("telegram_msg_id")
+  createdAt      DateTime      @default(now()) @map("created_at")
+  ticket         SupportTicket @relation(fields: [ticketId], references: [id], onDelete: Cascade)
+
+  @@index([ticketId, createdAt])
+  @@map("support_messages")
 }
 
 model FaqEntry {

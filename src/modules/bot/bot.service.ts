@@ -138,6 +138,40 @@ this.bot.hears('⚙️ Настройки', async (ctx) => {
       await this.handleTextMessage(ctx);
       
     });
+
+    this.bot.on('message:photo', async (ctx) => {
+      if (!ctx.from) return;
+      if (this.isAdmin(ctx)) {
+        const adminSession = await this.redis.getSession(ctx.from.id);
+        if (adminSession?.step === 'admin_support_message') {
+          await this.supportScreen.receiveAdminMedia(ctx);
+          return;
+        }
+      }
+      const user = await this.prisma.user.findUnique({ where: { telegramId: ctx.from.id } });
+      if (!user) return;
+      const session = await this.redis.getSession(Number(user.id));
+      if (session?.step === 'support_message') {
+        await this.supportScreen.receiveUserMedia(ctx, user);
+      }
+    });
+
+    this.bot.on('message:document', async (ctx) => {
+      if (!ctx.from) return;
+      if (this.isAdmin(ctx)) {
+        const adminSession = await this.redis.getSession(ctx.from.id);
+        if (adminSession?.step === 'admin_support_message') {
+          await this.supportScreen.receiveAdminMedia(ctx);
+          return;
+        }
+      }
+      const user = await this.prisma.user.findUnique({ where: { telegramId: ctx.from.id } });
+      if (!user) return;
+      const session = await this.redis.getSession(Number(user.id));
+      if (session?.step === 'support_message') {
+        await this.supportScreen.receiveUserMedia(ctx, user);
+      }
+    });
     
 
     this.bot.catch((err) => {
@@ -205,6 +239,15 @@ this.bot.hears('⚙️ Настройки', async (ctx) => {
 
     if (data.startsWith('deposit_accept:') || data.startsWith('deposit_reject:')) {
       await this.handleAdminDepositCallback(ctx, data);
+      return;
+    }
+
+    if (data.startsWith('support_admin_reply:')) {
+      await this.supportScreen.startAdminReply(ctx, BigInt(data.split(':')[1]));
+      return;
+    }
+    if (data.startsWith('support_admin_close:')) {
+      await this.supportScreen.closeAdminConversation(ctx, BigInt(data.split(':')[1]));
       return;
     }
 
@@ -735,7 +778,17 @@ if (data.startsWith('delete_card:')) {
     }
 
     if (data === 'create_ticket') {
-      await this.supportScreen.startCreateTicket(ctx, user);
+      await this.supportScreen.startConversation(ctx, user);
+      return;
+    }
+
+    if (data === 'support_start') {
+      await this.supportScreen.startConversation(ctx, user);
+      return;
+    }
+
+    if (data === 'support_close') {
+      await this.supportScreen.closeUserConversation(ctx, user);
       return;
     }
 
@@ -872,6 +925,10 @@ if (data.startsWith('delete_card:')) {
         await this.processAdminDepositAmount(ctx, adminSession, ctx.message.text ?? '');
         return;
       }
+      if (adminSession?.step === 'admin_support_message') {
+        await this.supportScreen.receiveAdminText(ctx, ctx.message.text ?? '');
+        return;
+      }
     }
 
     const telegramId = ctx.from.id;
@@ -911,11 +968,8 @@ if (data.startsWith('delete_card:')) {
       case 'add_requisite_bank_search':
         await this.requisitesScreen.searchBank(ctx, user, text);
         break;
-      case 'create_ticket_subject':
-        await this.supportScreen.receiveTicketSubject(ctx, user, text);
-        break;
-      case 'create_ticket_message':
-        await this.supportScreen.receiveTicketMessage(ctx, user, text);
+      case 'support_message':
+        await this.supportScreen.receiveUserText(ctx, user, text);
         break;
       case 'change_pin':
         await this.settingsScreen.receiveNewPin(ctx, user, text);
