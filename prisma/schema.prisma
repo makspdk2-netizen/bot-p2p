@@ -1,0 +1,188 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id                   BigInt           @id @default(autoincrement())
+  telegramId           BigInt           @unique @map("telegram_id")
+  username             String?          @map("username")
+  firstName            String?          @map("first_name")
+  lastName             String?          @map("last_name")
+  languageCode         String           @default("ru") @map("language_code")
+  balance              Decimal          @default(0) @db.Decimal(20, 8)
+  earnedTotal          Decimal          @default(0) @map("earned_total") @db.Decimal(20, 8)
+  pinHash              String?          @map("pin_hash")
+  notificationsEnabled Boolean          @default(true) @map("notifications_enabled")
+  createdAt            DateTime         @default(now()) @map("created_at")
+  updatedAt            DateTime         @updatedAt @map("updated_at")
+  requisites           Requisite[]
+  operations           Operation[]
+  deposits Deposit[]
+  supportTickets       SupportTicket[]
+  bonuses              Bonus[]
+  partnerCode          PartnerCode?
+  partnerEarnings      PartnerEarning[]
+  referralsGiven       ReferredUser[]   @relation("Referrer")
+  referralRecord       ReferredUser?    @relation("Referred")
+  supportTickets SupportTicket[]
+
+  @@map("users")
+}
+
+model Requisite {
+  id        BigInt   @id @default(autoincrement())
+  userId    BigInt   @map("user_id")
+  type      String   @default("card")
+  bank      String?
+  details   String
+  label     String?
+  isPrimary Boolean  @default(false) @map("is_primary")
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  isActive Boolean @default(false) @map("is_active")
+  @@map("requisites")
+}
+
+model Operation {
+  id          BigInt   @id @default(autoincrement())
+  userId      BigInt   @map("user_id")
+  type        String
+  currency    String?
+  amount      Decimal  @db.Decimal(20, 8)
+  amountRub   Decimal  @map("amount_rub") @db.Decimal(20, 8)
+  status      String   @default("completed")
+  description String?
+  createdAt   DateTime @default(now()) @map("created_at")
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("operations")
+}
+
+model PartnerCode {
+  id        BigInt   @id @default(autoincrement())
+  userId    BigInt   @unique @map("user_id")
+  code      String   @unique
+  createdAt DateTime @default(now()) @map("created_at")
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("partner_codes")
+}
+
+model ReferredUser {
+  id         BigInt   @id @default(autoincrement())
+  referrerId BigInt   @map("referrer_id")
+  referredId BigInt   @unique @map("referred_id")
+  createdAt  DateTime @default(now()) @map("created_at")
+  referrer   User     @relation("Referrer", fields: [referrerId], references: [id], onDelete: Cascade)
+  referred   User     @relation("Referred", fields: [referredId], references: [id], onDelete: Cascade)
+
+  @@map("referred_users")
+}
+
+model PartnerEarning {
+  id        BigInt   @id @default(autoincrement())
+  userId    BigInt   @map("user_id")
+  amount    Decimal  @db.Decimal(20, 8)
+  createdAt DateTime @default(now()) @map("created_at")
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("partner_earnings")
+}
+
+model SupportTicket {
+  id        BigInt   @id @default(autoincrement())
+  userId    BigInt   @map("user_id")
+  subject   String
+  message   String
+  status    String   @default("open")
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("support_tickets")
+}
+
+model FaqEntry {
+  id        BigInt   @id @default(autoincrement())
+  question  String
+  answer    String
+  order     Int      @default(0)
+  createdAt DateTime @default(now()) @map("created_at")
+
+  @@map("faq_entries")
+}
+
+model Bonus {
+  id        BigInt   @id @default(autoincrement())
+  userId    BigInt   @map("user_id")
+  type      String
+  amount    Decimal  @db.Decimal(20, 8)
+  claimedAt DateTime @default(now()) @map("claimed_at")
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, type])
+  @@map("bonuses")
+}
+
+model Deposit {
+  id        BigInt   @id @default(autoincrement())
+
+  userId    BigInt   @map("user_id")
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  currency  String
+  network   String
+
+  amount    Decimal?  @db.Decimal(20, 8)
+
+  txHash    String   @unique @map("tx_hash")
+
+  status    String   @default("pending")
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@map("deposits")
+}
+model SupportTicket {
+  id        String   @id @default(cuid())
+
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+
+  status    TicketStatus @default(OPEN)
+
+  messages  SupportMessage[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model SupportMessage {
+  id        String   @id @default(cuid())
+
+  ticketId  String
+  ticket    SupportTicket @relation(fields: [ticketId], references: [id], onDelete: Cascade)
+
+  sender    MessageSender
+
+  text      String?
+
+  createdAt DateTime @default(now())
+}
+
+enum TicketStatus {
+  OPEN
+  CLOSED
+}
+
+enum MessageSender {
+  USER
+  ADMIN
+}

@@ -1,0 +1,33 @@
+import { Module } from '@nestjs/common';
+import { BotService } from './bot.service';
+import { MainMenuModule } from '../main-menu/main-menu.module';
+import { BalanceModule } from '../balance/balance.module';
+import { DepositModule } from '../deposit/deposit.module';
+import { WithdrawalModule } from '../withdrawal/withdrawal.module';
+import { HistoryModule } from '../history/history.module';
+import { RequisitesModule } from '../requisites/requisites.module';
+import { PartnersModule } from '../partners/partners.module';
+import { BonusesModule } from '../bonuses/bonuses.module';
+import { SettingsModule } from '../settings/settings.module';
+import { SupportModule } from '../support/support.module';
+import { CommonModule } from '../../common/common.module';
+
+@Module({
+  imports: [
+    MainMenuModule,
+    BalanceModule,
+    DepositModule,
+    WithdrawalModule,
+    HistoryModule,
+    RequisitesModule,
+    PartnersModule,
+    BonusesModule,
+    SettingsModule,
+    SupportModule,
+    CommonModule,
+    WithdrawalModule
+  ],
+  providers: [BotService],
+  exports: [BotService],
+})
+export class BotModule {}
