@@ -202,6 +202,12 @@ this.bot.hears('⚙️ Настройки', async (ctx) => {
 
   private async handleCallback(ctx: Context, data: string) {
     if (!ctx.from) return;
+
+    if (data.startsWith('deposit_accept:') || data.startsWith('deposit_reject:')) {
+      await this.handleAdminDepositCallback(ctx, data);
+      return;
+    }
+
     const telegramId = ctx.from.id;
     const user = await this.prisma.user.findUnique({ where: { telegramId } });
     if (!user) {
@@ -809,6 +815,52 @@ if (data.startsWith('delete_card:')) {
     } else {
       await ctx.answerCallbackQuery({ text: 'Неизвестная команда' });
     }
+  }
+
+  private async handleAdminDepositCallback(ctx: Context, data: string) {
+    if (!this.isAdmin(ctx)) {
+      await ctx.answerCallbackQuery({ text: 'Недостаточно прав' });
+      return;
+    }
+
+    const depositId = BigInt(data.split(':')[1]);
+    const deposit = await this.prisma.deposit.findUnique({ where: { id: depositId } });
+
+    if (!deposit) {
+      await ctx.answerCallbackQuery({ text: 'Депозит не найден' });
+      return;
+    }
+    if (deposit.status !== 'pending') {
+      await ctx.answerCallbackQuery({ text: 'Уже обработан' });
+      return;
+    }
+
+    if (data.startsWith('deposit_accept:')) {
+      await this.redis.setSession(ctx.from!.id, {
+        step: 'admin_deposit_amount',
+        depositId: depositId.toString(),
+      });
+      await ctx.reply(`Введите сумму в рублях для зачисления по депозиту #${deposit.id}:`);
+      await ctx.editMessageText(`⏳ Депозит #${deposit.id}: ожидается сумма от администратора.`);
+      await ctx.answerCallbackQuery({ text: 'Введите сумму в рублях' });
+      return;
+    }
+
+    await this.prisma.deposit.update({
+      where: { id: depositId },
+      data: { status: 'rejected' },
+    });
+
+    const dbUser = await this.prisma.user.findUnique({
+      where: { id: deposit.userId },
+      select: { telegramId: true },
+    });
+    if (dbUser) {
+      await ctx.api.sendMessage(Number(dbUser.telegramId), '❌ Ваш депозит был отклонён администрацией.');
+    }
+
+    await ctx.editMessageText(`❌ Депозит #${deposit.id} отклонён.`);
+    await ctx.answerCallbackQuery({ text: 'Депозит отклонён' });
   }
 
   private async handleTextMessage(ctx: Context) {
