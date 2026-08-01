@@ -228,7 +228,7 @@ this.bot.hears('⚙️ Настройки', async (ctx) => {
 
     await this.redis.clearSession(Number(user.id));
 
-    await ctx.reply(buildWelcomeMessage(firstName || 'Пользователь'), {
+    await ctx.reply(buildWelcomeMessage(firstName || 'Пользователь', Number(user.balance)), {
       parse_mode: 'HTML',
       reply_markup: mainReplyKeyboard(),
     });
