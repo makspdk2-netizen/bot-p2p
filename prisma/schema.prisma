@@ -23,6 +23,7 @@ model User {
   requisites           Requisite[]
   operations           Operation[]
   deposits Deposit[]
+  paymentRequests PaymentRequest[]
   supportTickets       SupportTicket[]
   bonuses              Bonus[]
   partnerCode          PartnerCode?
@@ -45,6 +46,7 @@ model Requisite {
   updatedAt DateTime @updatedAt @map("updated_at")
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   isActive Boolean @default(false) @map("is_active")
+  paymentRequests PaymentRequest[]
   @@map("requisites")
 }
 
@@ -164,6 +166,53 @@ model Deposit {
   updatedAt DateTime @updatedAt @map("updated_at")
 
   @@map("deposits")
+}
+
+model PaymentRequest {
+  id             BigInt       @id @default(autoincrement())
+  code           String       @unique
+  userId         BigInt       @map("user_id")
+  requisiteId    BigInt       @map("requisite_id")
+  amount         Decimal      @db.Decimal(20, 8)
+  status         String       @default("pending_user")
+  deadline       DateTime
+  respondedAt    DateTime?    @map("responded_at")
+  completedAt    DateTime?    @map("completed_at")
+  createdAt      DateTime     @default(now()) @map("created_at")
+  updatedAt      DateTime     @updatedAt @map("updated_at")
+  user           User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  requisite      Requisite    @relation(fields: [requisiteId], references: [id], onDelete: Cascade)
+  messages       PaymentRequestMessage[]
+  proofs         PaymentRequestProof[]
+
+  @@index([status, deadline])
+  @@index([userId, createdAt])
+  @@map("payment_requests")
+}
+
+model PaymentRequestMessage {
+  id             BigInt         @id @default(autoincrement())
+  requestId      BigInt         @map("request_id")
+  senderType     String         @map("sender_type")
+  text           String
+  telegramMsgId  BigInt?        @map("telegram_msg_id")
+  createdAt      DateTime       @default(now()) @map("created_at")
+  request        PaymentRequest @relation(fields: [requestId], references: [id], onDelete: Cascade)
+
+  @@index([requestId, createdAt])
+  @@map("payment_request_messages")
+}
+
+model PaymentRequestProof {
+  id             BigInt         @id @default(autoincrement())
+  requestId      BigInt         @map("request_id")
+  mediaType      String         @map("media_type")
+  fileId         String         @map("file_id")
+  createdAt      DateTime       @default(now()) @map("created_at")
+  request        PaymentRequest @relation(fields: [requestId], references: [id], onDelete: Cascade)
+
+  @@index([requestId, createdAt])
+  @@map("payment_request_proofs")
 }
 
 

@@ -4,6 +4,7 @@ import { PrismaModule } from './prisma/prisma.module';
 import { RedisModule } from './redis/redis.module';
 import { BotModule } from './modules/bot/bot.module';
 import { AdminApiModule } from './modules/admin-api/admin-api.module';
+import { PaymentRequestsModule } from './modules/payment-requests/payment-requests.module';
 @Module({
   imports: [
     ConfigModule,
@@ -11,6 +12,7 @@ import { AdminApiModule } from './modules/admin-api/admin-api.module';
     RedisModule,
     BotModule,
     AdminApiModule
+    ,PaymentRequestsModule
   ],
 })
 export class AppModule {}

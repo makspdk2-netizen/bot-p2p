@@ -22,6 +22,7 @@ import {
 import { mainReplyKeyboard } from '../../common/utils/keyboards';
 import { banksKeyboard } from '../../common/utils/keyboards';
 import { buildSelectBankMessage } from '../../common/utils/messages';
+import { PaymentRequestsService } from '../payment-requests/payment-requests.service';
 @Injectable()
 export class BotService implements OnModuleInit, OnModuleDestroy {
   private bot!: Bot;
@@ -40,10 +41,12 @@ export class BotService implements OnModuleInit, OnModuleDestroy {
     private bonusesScreen: BonusesScreen,
     private settingsScreen: SettingsScreen,
     private supportScreen: SupportScreen,
+    private paymentRequests: PaymentRequestsService,
   ) {}
 
   async onModuleInit() {
     this.bot = new Bot(this.configService.botToken);
+    this.paymentRequests.attachBot(this.bot);
 
     this.bot.use(session({ initial: () => ({}) }));
 
@@ -141,6 +144,7 @@ this.bot.hears('⚙️ Настройки', async (ctx) => {
 
     this.bot.on('message:photo', async (ctx) => {
       if (!ctx.from) return;
+      if (await this.paymentRequests.receiveUserProof(ctx)) return;
       if (this.isAdmin(ctx)) {
         const adminSession = await this.redis.getSession(ctx.from.id);
         if (adminSession?.step === 'admin_support_message') {
@@ -158,6 +162,7 @@ this.bot.hears('⚙️ Настройки', async (ctx) => {
 
     this.bot.on('message:document', async (ctx) => {
       if (!ctx.from) return;
+      if (await this.paymentRequests.receiveUserProof(ctx)) return;
       if (this.isAdmin(ctx)) {
         const adminSession = await this.redis.getSession(ctx.from.id);
         if (adminSession?.step === 'admin_support_message') {
@@ -248,6 +253,27 @@ this.bot.hears('⚙️ Настройки', async (ctx) => {
     }
     if (data.startsWith('support_admin_close:')) {
       await this.supportScreen.closeAdminConversation(ctx, BigInt(data.split(':')[1]));
+      return;
+    }
+
+    if (data.startsWith('payment_request_accept:')) {
+      await this.paymentRequests.acceptFromUser(ctx, BigInt(data.split(':')[1]));
+      return;
+    }
+    if (data.startsWith('payment_request_reject:')) {
+      await this.paymentRequests.rejectFromUser(ctx, BigInt(data.split(':')[1]));
+      return;
+    }
+    if (data.startsWith('payment_request_confirm:')) {
+      await this.paymentRequests.confirmByAdmin(BigInt(data.split(':')[1]), ctx);
+      return;
+    }
+    if (data.startsWith('payment_request_message:')) {
+      await this.paymentRequests.startAdminMessage(BigInt(data.split(':')[1]), ctx);
+      return;
+    }
+    if (data.startsWith('payment_request_admin_reject:')) {
+      await this.paymentRequests.rejectByAdmin(BigInt(data.split(':')[1]), ctx);
       return;
     }
 
@@ -932,6 +958,10 @@ if (data.startsWith('delete_card:')) {
       }
       if (adminSession?.step === 'admin_support_message') {
         await this.supportScreen.receiveAdminText(ctx, ctx.message.text ?? '');
+        return;
+      }
+      if (adminSession?.step === 'admin_payment_request_message') {
+        await this.paymentRequests.receiveAdminMessage(ctx, ctx.message.text ?? '');
         return;
       }
     }
