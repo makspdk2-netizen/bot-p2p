@@ -376,11 +376,11 @@ export function buildRequisiteSetPrimaryMessage(): string {
 Реквизиты установлены как основные.`;
 }
 
-export function buildWelcomeMessage(firstName: string) {
+export function buildWelcomeMessage(firstName: string, balance: number) {
   return `
 <tg-emoji emoji-id="5217822164362739968">🔥</tg-emoji> <b>EPIC P2P | Главное меню</b>
 
-<tg-emoji emoji-id="5215420556089776398">💳</tg-emoji> <b>Ваш баланс:</b> 0 RUB
+<tg-emoji emoji-id="5215420556089776398">💳</tg-emoji> <b>Ваш баланс:</b> ${formatRub(balance)}
 
 <tg-emoji emoji-id="5462902520215002477">⭐</tg-emoji> <b>Главные фишки:</b>
 • Продавайте крипту с доплатой <b>+7%</b> к сумме.

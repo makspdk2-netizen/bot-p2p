@@ -4,7 +4,6 @@ import { PrismaService } from '../../prisma/prisma.service';
 import { RedisService } from '../../redis/redis.service';
 import { buildWelcomeMessage } from '../../common/utils/messages';
 import { mainReplyKeyboard } from '../../common/utils/keyboards';
-import { editOrReply } from "../../common/utils/edit-or-reply";
 
 @Injectable()
 export class MainMenuScreen {
@@ -13,19 +12,25 @@ export class MainMenuScreen {
     private redis: RedisService,
   ) {}
 
- async show(ctx: Context, user: { id: bigint | number; firstName?: string | null }) {
-  const userId = Number(user.id);
+  async show(ctx: Context, user: { id: bigint | number; firstName?: string | null }) {
+    const userId = Number(user.id);
 
-  await this.redis.setSession(userId, {
-    currentScreen: 'main_menu',
-  });
+    await this.redis.setSession(userId, { currentScreen: 'main_menu' });
 
-  await ctx.reply(
-  buildWelcomeMessage(user.firstName || 'Пользователь'),
-  {
-    parse_mode: 'HTML',
-    reply_markup: mainReplyKeyboard(),
-  },
-);
-}
+    const dbUser = await this.prisma.user.findUnique({
+      where: { id: BigInt(userId) },
+      select: { firstName: true, balance: true },
+    });
+
+    await ctx.reply(
+      buildWelcomeMessage(
+        dbUser?.firstName || user.firstName || 'Пользователь',
+        Number(dbUser?.balance ?? 0),
+      ),
+      {
+        parse_mode: 'HTML',
+        reply_markup: mainReplyKeyboard(),
+      },
+    );
+  }
 }

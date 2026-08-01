@@ -205,18 +205,14 @@ export function supportMenuKeyboard() {
   return new InlineKeyboard()
     .add({ text: '🆘 Написать оператору', callback_data: 'support_start', style: 'success', icon_custom_emoji_id: '5472239203590888751' })
     .row()
-    .add({ text: '💬 Продолжить диалог', callback_data: 'support_start', style: 'primary', icon_custom_emoji_id: '5332724926216428039' })
-    .row()
     .add({ text: '❓ Частые вопросы', callback_data: 'faq', style: 'primary', icon_custom_emoji_id: '5472250091332993630' })
     .row()
-    .add({ text: '🏠 Главное меню', callback_data: 'main_menu', icon_custom_emoji_id: '5215420556089776398' });
+    .add({ text: '⬅️ Назад', callback_data: 'back', icon_custom_emoji_id: '5215420556089776398' });
 }
 
 export function supportChatKeyboard() {
   return new InlineKeyboard()
-    .add({ text: '🔒 Закрыть диалог', callback_data: 'support_close', style: 'danger', icon_custom_emoji_id: '5397916757333654639' })
-    .row()
-    .add({ text: '🏠 Главное меню', callback_data: 'main_menu', icon_custom_emoji_id: '5215420556089776398' });
+    .add({ text: '⬅️ Назад', callback_data: 'back', icon_custom_emoji_id: '5215420556089776398' });
 }
 
 export function adminSupportKeyboard(ticketId: bigint) {
