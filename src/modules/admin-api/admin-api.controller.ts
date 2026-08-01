@@ -1,6 +1,7 @@
-import { Controller, Get, Post, Param, Body } from '@nestjs/common';
+import { Controller, Get, Post, Param, Body, Query } from '@nestjs/common';
 import { AdminApiService } from './admin-api.service';
 import { PrismaService } from '../../prisma/prisma.service';
+import { PaymentRequestsService } from '../payment-requests/payment-requests.service';
 
 
 @Controller('admin')
@@ -10,6 +11,7 @@ export class AdminApiController {
   constructor(
     private service: AdminApiService,
     private prisma: PrismaService,
+    private paymentRequestService: PaymentRequestsService,
   ) {}
 
 
@@ -124,6 +126,21 @@ async cards(){
     };
 
 
+  }
+
+  @Post('payment-requests')
+  async createPaymentRequest(@Body() body: { userId: string | number; requisiteId: string | number; amount: number }) {
+    return this.paymentRequestService.createRequest(BigInt(body.userId), BigInt(body.requisiteId), Number(body.amount));
+  }
+
+  @Get('payment-requests')
+  async paymentRequests(@Query('status') status?: string) {
+    return this.paymentRequestService.listRequests(status);
+  }
+
+  @Get('payment-requests/:id')
+  async paymentRequest(@Param('id') id: string) {
+    return this.paymentRequestService.getRequest(BigInt(id));
   }
 
 

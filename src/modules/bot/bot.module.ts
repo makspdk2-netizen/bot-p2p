@@ -11,6 +11,7 @@ import { BonusesModule } from '../bonuses/bonuses.module';
 import { SettingsModule } from '../settings/settings.module';
 import { SupportModule } from '../support/support.module';
 import { CommonModule } from '../../common/common.module';
+import { PaymentRequestsModule } from '../payment-requests/payment-requests.module';
 
 @Module({
   imports: [
@@ -26,6 +27,7 @@ import { CommonModule } from '../../common/common.module';
     SupportModule,
     CommonModule,
     WithdrawalModule
+    ,PaymentRequestsModule
   ],
   providers: [BotService],
   exports: [BotService],
