@@ -6,6 +6,7 @@ import { buildFaqMessage, buildTicketsListMessage, escapeHtml } from '../../comm
 import {
   adminSupportKeyboard,
   supportChatKeyboard,
+  supportFaqKeyboard,
   supportMenuKeyboard,
 } from '../../common/utils/keyboards';
 
@@ -163,8 +164,8 @@ export class SupportScreen {
   async showFaq(ctx: Context, _user: { id: bigint | number }) {
     const entries = await this.prisma.faqEntry.findMany({ orderBy: { order: 'asc' } });
     const message = buildFaqMessage(entries.map((entry) => ({ id: Number(entry.id), question: entry.question, answer: entry.answer })));
-    await ctx.editMessageText(message, { parse_mode: 'HTML', reply_markup: supportMenuKeyboard() })
-      .catch(() => ctx.reply(message, { parse_mode: 'HTML', reply_markup: supportMenuKeyboard() }));
+    await ctx.editMessageText(message, { parse_mode: 'HTML', reply_markup: supportFaqKeyboard() })
+      .catch(() => ctx.reply(message, { parse_mode: 'HTML', reply_markup: supportFaqKeyboard() }));
   }
 
   private async getOrCreateTicket(userId: bigint) {
