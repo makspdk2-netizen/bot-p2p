@@ -787,6 +787,11 @@ if (data.startsWith('delete_card:')) {
       return;
     }
 
+    if (data === 'support_back') {
+      await this.supportScreen.show(ctx, user);
+      return;
+    }
+
     if (data === 'support_close') {
       await this.supportScreen.closeUserConversation(ctx, user);
       return;
