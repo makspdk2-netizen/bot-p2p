@@ -30,7 +30,7 @@ if (requisites.length === 0) {
   const message = `
 <tg-emoji emoji-id="5472250091332993630">💳</tg-emoji><b>Список ваших карт пуст</b>
 
-Добавьте первую карту, чтобы запустить продажу криптовалюты.<tg-emoji emoji-id="5406745015365943482">👇</tg-emoji>
+Добавьте карту, чтобы запустить продажу криптовалюты.<tg-emoji emoji-id="5406745015365943482">👇</tg-emoji>
 `;
 
   await ctx.reply(message, {
