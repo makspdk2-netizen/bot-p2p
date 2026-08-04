@@ -31,7 +31,15 @@ export class ConfigService {
   get redisPort(): number {
     return parseInt(this.get('REDIS_PORT', '6379'), 10);
   }
+ get redisPassword(): string {
+  return this.get('REDIS_PASSWORD');
+}
 
+get redisUrl(): string {
+  return this.get('REDIS_URL');
+}
+
+  
   get btcAddress(): string {
     return this.get('BTC_ADDRESS');
   }

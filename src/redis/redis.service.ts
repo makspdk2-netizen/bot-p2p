@@ -9,9 +9,18 @@ export class RedisService implements OnModuleInit, OnModuleDestroy {
   constructor(private configService: ConfigService) {}
 
  async onModuleInit() {
+  if (this.configService.redisUrl) {
+    this.client = new Redis(this.configService.redisUrl, {
+      maxRetriesPerRequest: null,
+      enableReadyCheck: false,
+    });
+    return;
+  }
+
   this.client = new Redis({
     host: this.configService.redisHost,
     port: this.configService.redisPort,
+    password: this.configService.redisPassword,
     tls: {},
     maxRetriesPerRequest: null,
     enableReadyCheck: false,
