@@ -13,6 +13,7 @@ import {
   depositAdminKeyboard,
 } from '../../common/utils/keyboards';
 import { USER_BONUS_PERCENT, formatRatePercent } from '../../config/rates.config';
+import { RatesService } from '../../config/rates.service';
 
 
 @Injectable()
@@ -21,6 +22,7 @@ export class DepositScreen {
     private prisma: PrismaService,
     private redis: RedisService,
     private configService: ConfigService,
+    private ratesService: RatesService,
   ) {}
 
   async showCurrencies(ctx: Context, user: { id: bigint | number }) {
@@ -44,12 +46,33 @@ export class DepositScreen {
 
   const balance = dbUser?.balance ?? 0;
 
+  let ratesBlock = `<blockquote>💱 Актуальный курс временно недоступен.</blockquote>`;
+  try {
+    const rates = await this.ratesService.getDisplayRates();
+    const formatRate = (value: number) => value.toLocaleString('ru-RU', {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
+    });
+
+    ratesBlock = `<blockquote>💱 <b>Курс пополнения:</b>
+₿ 1 BTC: ${formatRate(rates.btc)} RUB
+Ł 1 LTC: ${formatRate(rates.ltc)} RUB
+₮ 1 USDT: ${formatRate(rates.usdt_trc20)} RUB
+💎 1 TON: ${formatRate(rates.ton)} RUB</blockquote>`;
+  } catch {
+    // The deposit screen remains available if the rate provider is temporarily unavailable.
+  }
+
 
   const message = `
 
-💳 Ваш баланс: ${balance} ₽
+ <tg-emoji emoji-id="5201873447554145566">💳</tg-emoji> Ваш баланс: ${balance} ₽
 
-💎 Доплата за пополнение: +${formatRatePercent(USER_BONUS_PERCENT)}
+<tg-emoji emoji-id="5462902520215002477">💳</tg-emoji> Доплата за пополнение: +${formatRatePercent(USER_BONUS_PERCENT)}
+
+${ratesBlock}
+
+<i>Курс в плашке не включает бонус +${formatRatePercent(USER_BONUS_PERCENT)}. Бонус добавляется отдельно при зачислении.</i>
 
 Для пополнения баланса используйте кнопки ниже:`;
 

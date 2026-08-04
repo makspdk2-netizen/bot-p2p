@@ -21,7 +21,7 @@ export class SupportScreen {
 
   async show(ctx: Context, user: { id: bigint | number }) {
     await this.redis.setSession(Number(user.id), { currentScreen: 'support' });
-    const message = `💬 <b>Поддержка</b>\n\nВы можете написать оператору прямо здесь. Мы ответим в этом чате.`;
+    const message = `<tg-emoji emoji-id="5443038326535759644">⭐️</tg-emoji><b>Поддержка</b>\n\nВы можете написать оператору прямо здесь. Мы ответим в этом чате.`;
     await ctx.editMessageText(message, {
       parse_mode: 'HTML',
       reply_markup: supportMenuKeyboard(),

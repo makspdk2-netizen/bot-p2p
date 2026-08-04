@@ -22,12 +22,12 @@ export function mainReplyKeyboard() {
     .add({
       text: 'Пополнить',
       style: 'success',
-      icon_custom_emoji_id: PREMIUM_DIAMOND_EMOJI_ID,
+      icon_custom_emoji_id: '5397916757333654639',
     })
     .add({
       text: 'Вывод на карту',
       style: 'primary',
-      icon_custom_emoji_id: PREMIUM_CARD_EMOJI_ID,
+      icon_custom_emoji_id: '5472250091332993630',
     })
     .row()
     .add({
@@ -82,24 +82,9 @@ export function depositCurrenciesKeyboard() {
     })
     .row()
     .add({
-      text: 'USDT ERC20',
-      callback_data: 'deposit:usdt_erc20',
-      icon_custom_emoji_id: '5201692367437974073',
-      style: 'success',
-    })
-    .row()
-    .add({
-      text: 'USDT BEP20',
-      callback_data: 'deposit:usdt_bep20',
-      icon_custom_emoji_id: '5201692367437974073',
-      style: 'success',
-    })
-    .row()
-    .add({
-      text: 'TON',
+      text: 'Gramm',
       callback_data: 'deposit:ton',
-      icon_custom_emoji_id: PREMIUM_DIAMOND_EMOJI_ID,
-      style: 'primary',
+      icon_custom_emoji_id: '5377620962390857342',
     });
 }
 
@@ -241,9 +226,9 @@ export function supportKeyboard() {
 
 export function supportMenuKeyboard() {
   return new InlineKeyboard()
-    .add({ text: '🆘 Написать оператору', callback_data: 'support_start', style: 'success', icon_custom_emoji_id: '5472239203590888751' })
+    .add({ text: 'Написать оператору', callback_data: 'support_start', style: 'danger', icon_custom_emoji_id: '5303138782004924588' })
     .row()
-    .add({ text: '❓ Частые вопросы', callback_data: 'faq', style: 'primary', icon_custom_emoji_id: '5472250091332993630' });
+    .add({ text: 'Частые вопросы', callback_data: 'faq', style: 'success', icon_custom_emoji_id: '5436113877181941026' });
 }
 
 export function supportChatKeyboard() {
@@ -365,9 +350,10 @@ export function banksKeyboard(page = 1) {
 
   if (page > 1) {
   keyboard.add({
-    text: '⬅️',
+    text: '\u2063',
     callback_data: `banks_page:${page - 1}`,
     style: 'primary',
+    icon_custom_emoji_id: '5255703720078879038'
   });
 } else {
   keyboard.add({
@@ -383,9 +369,10 @@ keyboard.add({
 
 if (page < totalPages) {
   keyboard.add({
-    text: '➡️',
+    text: '\u2063',
     callback_data: `banks_page:${page + 1}`,
     style: 'primary',
+    icon_custom_emoji_id: '5253767677670862169'
   });
 } else {
   keyboard.add({
