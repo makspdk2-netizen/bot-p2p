@@ -54,11 +54,10 @@ export class DepositScreen {
       maximumFractionDigits: 2,
     });
 
-    ratesBlock = `<blockquote>💱 <b>Курс пополнения:</b>
-₿ 1 BTC: ${formatRate(rates.btc)} RUB
-Ł 1 LTC: ${formatRate(rates.ltc)} RUB
-₮ 1 USDT: ${formatRate(rates.usdt_trc20)} RUB
-💎 1 TON: ${formatRate(rates.ton)} RUB</blockquote>`;
+    ratesBlock = `<blockquote><tg-emoji emoji-id="5379773896352355687">💳</tg-emoji>1 BTC: ${formatRate(rates.btc)} RUB
+<tg-emoji emoji-id="5202064723922670546">💳</tg-emoji>1 LTC: ${formatRate(rates.ltc)} RUB
+<tg-emoji emoji-id="5197434882321567830">💳</tg-emoji>1 USDT: ${formatRate(rates.usdt_trc20)} RUB
+<tg-emoji emoji-id="5377620962390857342">💳</tg-emoji>1 Gramm: ${formatRate(rates.ton)} RUB</blockquote>`;
   } catch {
     // The deposit screen remains available if the rate provider is temporarily unavailable.
   }
@@ -70,9 +69,10 @@ export class DepositScreen {
 
 <tg-emoji emoji-id="5462902520215002477">💳</tg-emoji> Доплата за пополнение: +${formatRatePercent(USER_BONUS_PERCENT)}
 
+<tg-emoji emoji-id="5451882707875276247">💳</tg-emoji> <b>Курс пополнения:</b>
 ${ratesBlock}
 
-<i>Курс в плашке не включает бонус +${formatRatePercent(USER_BONUS_PERCENT)}. Бонус добавляется отдельно при зачислении.</i>
+<i><tg-emoji emoji-id="5411528427817673409">💳</tg-emoji>баланс фиксируется в рублях в момент зачисления монеты</i>
 
 Для пополнения баланса используйте кнопки ниже:`;
 

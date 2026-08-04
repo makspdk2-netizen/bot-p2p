@@ -36,10 +36,10 @@ export class SupportScreen {
       data: { ticketId: ticket.id.toString() },
     });
     await ctx.editMessageText(
-      `🆘 <b>Диалог с поддержкой</b>\n\nНапишите сообщение, и оператор ответит вам здесь.`,
+      `<tg-emoji emoji-id="5443038326535759644">⭐️</tg-emoji><b>Диалог с поддержкой</b>\n\nНапишите сообщение, и оператор ответит вам здесь.`,
       { parse_mode: 'HTML', reply_markup: supportChatKeyboard() },
     ).catch(() => ctx.reply(
-      `🆘 <b>Диалог с поддержкой</b>\n\nНапишите сообщение, и оператор ответит вам здесь.`,
+      `<tg-emoji emoji-id="5443038326535759644">⭐️</tg-emoji> <b>Диалог с поддержкой</b>\n\nНапишите сообщение, и оператор ответит вам здесь.`,
       { parse_mode: 'HTML', reply_markup: supportChatKeyboard() },
     ));
   }
