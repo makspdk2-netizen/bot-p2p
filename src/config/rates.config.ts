@@ -12,6 +12,10 @@ export function getUserRateFromApiRate(apiRateRub: number): number {
   return apiRateRub * courseMarkup * userBonus;
 }
 
+export function getCourseRateFromApiRate(apiRateRub: number): number {
+  return apiRateRub * (1 + COURSE_MARKUP_PERCENT / 100);
+}
+
 export function getEffectiveMarkupPercent(): number {
   return ((1 + COURSE_MARKUP_PERCENT / 100) * (1 + USER_BONUS_PERCENT / 100) - 1) * 100;
 }

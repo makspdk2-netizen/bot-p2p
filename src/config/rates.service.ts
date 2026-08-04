@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import {
   COURSE_MARKUP_PERCENT,
   USER_BONUS_PERCENT,
+  getCourseRateFromApiRate,
   getUserRateFromApiRate,
 } from './rates.config';
 
@@ -28,6 +29,18 @@ export class RatesService {
     }
 
     return rate;
+  }
+
+  async getCourseRate(currency: string): Promise<number> {
+    return getCourseRateFromApiRate(await this.getApiRate(currency));
+  }
+
+  async getDisplayRates(): Promise<Record<string, number>> {
+    const currencies = ['btc', 'ltc', 'usdt_trc20', 'ton'];
+    const rates = await Promise.all(
+      currencies.map(async (currency) => [currency, await this.getCourseRate(currency)] as const),
+    );
+    return Object.fromEntries(rates);
   }
 
   getMarkupSummary(): string {
