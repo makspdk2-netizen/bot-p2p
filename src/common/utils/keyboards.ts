@@ -7,6 +7,7 @@ export const PREMIUM_HOME_EMOJI_ID = '5240118799885158175';
 export const PREMIUM_SENT_EMOJI_ID = '5206607081334906820';
 export const PREMIUM_DIAMOND_EMOJI_ID = '5467432173113974705';
 export const PREMIUM_CARD_EMOJI_ID = '5215420556089776398';
+export const MAIN_MENU_BUTTON_TEXT = 'Главное меню';
 
 function addBack(kb: InlineKeyboard, callbackData = 'back') {
   return kb.add({ text: 'Назад', callback_data: callbackData, icon_custom_emoji_id: PREMIUM_BACK_EMOJI_ID });
@@ -36,6 +37,11 @@ export function mainReplyKeyboard() {
     .add({
       text: 'Поддержка',
       icon_custom_emoji_id: '5472239203590888751',
+    })
+    .row()
+    .add({
+      text: MAIN_MENU_BUTTON_TEXT,
+      icon_custom_emoji_id: PREMIUM_HOME_EMOJI_ID,
     })
     .resized();
 }

@@ -12,6 +12,7 @@ import {
   depositAddressKeyboard,
   depositAdminKeyboard,
 } from '../../common/utils/keyboards';
+import { USER_BONUS_PERCENT, formatRatePercent } from '../../config/rates.config';
 
 
 @Injectable()
@@ -48,7 +49,7 @@ export class DepositScreen {
 
 💳 Ваш баланс: ${balance} ₽
 
-💎 Доплата за пополнение: +7.00%
+💎 Доплата за пополнение: +${formatRatePercent(USER_BONUS_PERCENT)}
 
 Для пополнения баланса используйте кнопки ниже:`;
 

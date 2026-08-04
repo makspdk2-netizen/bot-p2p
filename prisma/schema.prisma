@@ -157,6 +157,9 @@ model Deposit {
   network   String
 
   amount    Decimal?  @db.Decimal(20, 8)
+  rateRub   Decimal?  @map("rate_rub") @db.Decimal(20, 8)
+  amountRub Decimal?  @map("amount_rub") @db.Decimal(20, 8)
+  markup    Decimal?  @db.Decimal(5, 2)
 
   txHash    String   @unique @map("tx_hash")
 
