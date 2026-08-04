@@ -12,6 +12,7 @@ import {
   depositAddressKeyboard,
   depositAdminKeyboard,
 } from '../../common/utils/keyboards';
+import { USER_BONUS_PERCENT, formatRatePercent } from '../../config/rates.config';
 
 
 @Injectable()
@@ -48,7 +49,7 @@ export class DepositScreen {
 
  <tg-emoji emoji-id="5201873447554145566">💳</tg-emoji> Ваш баланс: ${balance} ₽
 
-<tg-emoji emoji-id="5462902520215002477">💳</tg-emoji> Доплата за пополнение: +7.00%
+<tg-emoji emoji-id="5462902520215002477">💳</tg-emoji> Доплата за пополнение: +${formatRatePercent(USER_BONUS_PERCENT)}
 
 Для пополнения баланса используйте кнопки ниже:`;
 

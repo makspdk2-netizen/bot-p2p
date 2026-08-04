@@ -1,3 +1,5 @@
+import { USER_BONUS_PERCENT, formatRatePercent } from '../../config/rates.config';
+
 export function escapeHtml(text: string): string {
   return text
     .replace(/&/g, '&amp;')
@@ -383,7 +385,7 @@ export function buildWelcomeMessage(firstName: string, balance: number) {
 <tg-emoji emoji-id="5215420556089776398">💳</tg-emoji> <b>Ваш баланс:</b> ${formatRub(balance)}
 
 <tg-emoji emoji-id="5462902520215002477">⭐</tg-emoji> <b>Главные фишки:</b>
-• Продавайте крипту с доплатой <b>+7%</b> к сумме.
+• Продавайте крипту с доплатой <b>+${formatRatePercent(USER_BONUS_PERCENT)}</b> к сумме.
 • Моментальный вывод от <b>3000₽</b> — без долгого ожидания встречных заявок.
 
 Выберите действие на клавиатуре ниже <tg-emoji emoji-id="5406745015365943482">👇</tg-emoji>
