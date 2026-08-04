@@ -21,6 +21,8 @@ import {
   addRequisiteTypeKeyboard,
   backAndMainKeyboard,
   confirmCancelKeyboard,
+  PREMIUM_BACK_EMOJI_ID,
+  PREMIUM_HOME_EMOJI_ID,
 } from '../../common/utils/keyboards';
 
 @Injectable()
@@ -250,7 +252,8 @@ return;
     }
 
     kb.row().text('🔍 Поиск', 'bank_search').row();
-    kb.text('⬅ Назад', 'back').text('🏠 Главное меню', 'main_menu');
+    kb.add({ text: 'Назад', callback_data: 'back', icon_custom_emoji_id: PREMIUM_BACK_EMOJI_ID });
+    kb.add({ text: 'Главное меню', callback_data: 'main_menu', icon_custom_emoji_id: PREMIUM_HOME_EMOJI_ID });
 
     const message = buildAddRequisiteBankMessage();
 
@@ -340,7 +343,8 @@ await ctx.editMessageText(message,{
     results.slice(0, 10).forEach(([key, label]) => {
       kb.text(label, `bank_select:${key}`).row();
     });
-    kb.text('⬅ Назад', 'back').text('🏠 Главное меню', 'main_menu');
+    kb.add({ text: 'Назад', callback_data: 'back', icon_custom_emoji_id: PREMIUM_BACK_EMOJI_ID });
+    kb.add({ text: 'Главное меню', callback_data: 'main_menu', icon_custom_emoji_id: PREMIUM_HOME_EMOJI_ID });
 
     const message = `🏦 <b>Результаты поиска</b>
 
@@ -609,8 +613,13 @@ async activateCard(
 .add({
   
   text: 'Назад',
-  icon_custom_emoji_id: '5976535107933050770',
+  icon_custom_emoji_id: PREMIUM_BACK_EMOJI_ID,
   callback_data: 'withdrawal_back',
+})
+.add({
+  text: 'Главное меню',
+  icon_custom_emoji_id: PREMIUM_HOME_EMOJI_ID,
+  callback_data: 'main_menu',
 }),
 });
 }
