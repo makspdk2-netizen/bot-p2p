@@ -3,6 +3,7 @@ import { Context, InlineKeyboard } from 'grammy';
 import { PrismaService } from '../../prisma/prisma.service';
 import { RedisService } from '../../redis/redis.service';
 import { buildBalanceMessage } from '../../common/utils/messages';
+import { PREMIUM_CARD_EMOJI_ID, PREMIUM_DIAMOND_EMOJI_ID, PREMIUM_HOME_EMOJI_ID } from '../../common/utils/keyboards';
 
 @Injectable()
 export class BalanceScreen {
@@ -86,10 +87,10 @@ export class BalanceScreen {
 
 function balanceKeyboard() {
   return new InlineKeyboard()
-    .text('➕ Пополнить', 'deposit')
-    .text('💸 Вывести', 'withdrawal')
+    .add({ text: 'Пополнить', callback_data: 'deposit', style: 'success', icon_custom_emoji_id: PREMIUM_DIAMOND_EMOJI_ID })
+    .add({ text: 'Вывести', callback_data: 'withdrawal', style: 'primary', icon_custom_emoji_id: PREMIUM_CARD_EMOJI_ID })
     .row()
-    .text('📜 История', 'history')
+    .add({ text: 'История', callback_data: 'history', icon_custom_emoji_id: '5472250091332993630' })
     .row()
-    .text('🏠 Главное меню', 'main_menu');
+    .add({ text: 'Главное меню', callback_data: 'main_menu', icon_custom_emoji_id: PREMIUM_HOME_EMOJI_ID });
 }

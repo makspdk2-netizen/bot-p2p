@@ -2,18 +2,31 @@ import { InlineKeyboard } from 'grammy';
 import { BankLabels } from '../enums/bank.enum';
 import { Keyboard } from 'grammy';
 export const BANKS_PER_PAGE = 12;
+export const PREMIUM_BACK_EMOJI_ID = '5976535107933050770';
+export const PREMIUM_HOME_EMOJI_ID = '5240118799885158175';
+export const PREMIUM_SENT_EMOJI_ID = '5206607081334906820';
+export const PREMIUM_DIAMOND_EMOJI_ID = '5467432173113974705';
+export const PREMIUM_CARD_EMOJI_ID = '5215420556089776398';
+
+function addBack(kb: InlineKeyboard, callbackData = 'back') {
+  return kb.add({ text: 'Назад', callback_data: callbackData, icon_custom_emoji_id: PREMIUM_BACK_EMOJI_ID });
+}
+
+function addMainMenu(kb: InlineKeyboard) {
+  return kb.add({ text: 'Главное меню', callback_data: 'main_menu', icon_custom_emoji_id: PREMIUM_HOME_EMOJI_ID });
+}
 
 export function mainReplyKeyboard() {
   return new Keyboard()
     .add({
       text: 'Пополнить',
       style: 'success',
-      icon_custom_emoji_id: '5215420556089776398',
+      icon_custom_emoji_id: PREMIUM_DIAMOND_EMOJI_ID,
     })
     .add({
       text: 'Вывод на карту',
       style: 'primary',
-      icon_custom_emoji_id: '5472250091332993630',
+      icon_custom_emoji_id: PREMIUM_CARD_EMOJI_ID,
     })
     .row()
     .add({
@@ -28,19 +41,17 @@ export function mainReplyKeyboard() {
 }
 
 export function backToMainKeyboard() {
-  return new InlineKeyboard()
-    .text('🏠 Главное меню', 'main_menu');
+  return addMainMenu(new InlineKeyboard());
 }
 
 export function backAndMainKeyboard() {
-  return new InlineKeyboard()
-    .text('⬅ Назад', 'back')
-    .text('🏠 Главное меню', 'main_menu');
+  const kb = new InlineKeyboard();
+  addBack(kb);
+  return addMainMenu(kb);
 }
 
 export function backKeyboard() {
-  return new InlineKeyboard()
-    .text('⬅ Назад', 'back');
+  return addBack(new InlineKeyboard());
 }
 
 export function depositCurrenciesKeyboard() {
@@ -61,15 +72,35 @@ export function depositCurrenciesKeyboard() {
       text: 'USDT TRC20',
       callback_data: 'deposit:usdt_trc20',
       icon_custom_emoji_id: '5201692367437974073',
+      style: 'success',
+    })
+    .row()
+    .add({
+      text: 'USDT ERC20',
+      callback_data: 'deposit:usdt_erc20',
+      icon_custom_emoji_id: '5201692367437974073',
+      style: 'success',
+    })
+    .row()
+    .add({
+      text: 'USDT BEP20',
+      callback_data: 'deposit:usdt_bep20',
+      icon_custom_emoji_id: '5201692367437974073',
+      style: 'success',
+    })
+    .row()
+    .add({
+      text: 'TON',
+      callback_data: 'deposit:ton',
+      icon_custom_emoji_id: PREMIUM_DIAMOND_EMOJI_ID,
+      style: 'primary',
     });
 }
 
 export function depositAddressKeyboard(currency: string) {
-  return new InlineKeyboard()
-    .text('✅ Я отправил', `deposit_sent:${currency}`)
-    .row()
-    .text('⬅ Назад', 'back')
-    .text('🏠 Главное меню', 'main_menu');
+  const kb = new InlineKeyboard().add({ text: 'Я отправил', callback_data: `deposit_sent:${currency}`, style: 'success', icon_custom_emoji_id: PREMIUM_SENT_EMOJI_ID }).row();
+  addBack(kb);
+  return addMainMenu(kb);
 }
 
 export function withdrawalStartKeyboard() {
@@ -126,25 +157,25 @@ export function withdrawalRequisitesKeyboard(
 }
 
 export function requisiteActionKeyboard(requisiteId: number) {
-  return new InlineKeyboard()
+  const kb = new InlineKeyboard()
     .text('⭐ Сделать основной', `requisite_set_primary:${requisiteId}`)
     .text('✏ Изменить', `requisite_edit:${requisiteId}`)
     .row()
     .text('🗑 Удалить', `requisite_delete:${requisiteId}`)
-    .row()
-    .text('⬅ Назад', 'back')
-    .text('🏠 Главное меню', 'main_menu');
+    .row();
+  addBack(kb);
+  return addMainMenu(kb);
 }
 
 export function addRequisiteTypeKeyboard() {
-  return new InlineKeyboard()
+  const kb = new InlineKeyboard()
     .text('💳 Карта', 'add_requisite:card')
     .text('📱 СБП', 'add_requisite:sbp')
     .row()
     .text('📞 Телефон', 'add_requisite:phone')
-    .row()
-    .text('⬅ Назад', 'back')
-    .text('🏠 Главное меню', 'main_menu');
+    .row();
+  addBack(kb);
+  return addMainMenu(kb);
 }
 
 export function bankSelectionKeyboard(page: number = 0) {
@@ -170,7 +201,8 @@ export function bankSelectionKeyboard(page: number = 0) {
   }
 
   kb.row().text('🔍 Поиск', 'bank_search').row();
-  kb.text('⬅ Назад', 'back').text('🏠 Главное меню', 'main_menu');
+  addBack(kb);
+  addMainMenu(kb);
   return kb;
 }
 
@@ -183,22 +215,22 @@ export function historyKeyboard(page: number, totalPages: number) {
     const navButtons = navRow.map(b => InlineKeyboard.text(b.text, b.callback_data));
     kb.row(...navButtons);
   }
-  kb.row().text('🏠 Главное меню', 'main_menu');
+  kb.row();
+  addMainMenu(kb);
   return kb;
 }
 
 export function partnersKeyboard() {
-  return new InlineKeyboard()
+  const kb = new InlineKeyboard()
     .text('📋 Копировать ссылку', 'copy_partner_link')
     .text('📊 Статистика', 'partner_stats')
-    .row()
-    .text('⬅ Назад', 'back')
-    .text('🏠 Главное меню', 'main_menu');
+    .row();
+  addBack(kb);
+  return addMainMenu(kb);
 }
 
 export function supportKeyboard() {
-  return new InlineKeyboard()
-    .text('🏠 Главное меню', 'main_menu');
+  return addMainMenu(new InlineKeyboard());
 }
 
 export function supportMenuKeyboard() {
@@ -209,13 +241,11 @@ export function supportMenuKeyboard() {
 }
 
 export function supportChatKeyboard() {
-  return new InlineKeyboard()
-    .add({ text: '⬅️ Назад', callback_data: 'support_back', icon_custom_emoji_id: '5215420556089776398' });
+  return addBack(new InlineKeyboard(), 'support_back');
 }
 
 export function supportFaqKeyboard() {
-  return new InlineKeyboard()
-    .add({ text: '⬅️ Назад', callback_data: 'support_back', icon_custom_emoji_id: '5215420556089776398' });
+  return addBack(new InlineKeyboard(), 'support_back');
 }
 
 export function adminSupportKeyboard(ticketId: bigint) {
@@ -225,60 +255,60 @@ export function adminSupportKeyboard(ticketId: bigint) {
 }
 
 export function settingsKeyboard() {
-  return new InlineKeyboard()
+  const kb = new InlineKeyboard()
     .text('🌐 Язык', 'settings_language')
     .text('🔔 Уведомления', 'settings_notifications')
     .row()
     .text('🔒 Безопасность', 'settings_security')
-    .row()
-    .text('⬅ Назад', 'back')
-    .text('🏠 Главное меню', 'main_menu');
+    .row();
+  addBack(kb);
+  return addMainMenu(kb);
 }
 
 export function languageKeyboard() {
-  return new InlineKeyboard()
+  const kb = new InlineKeyboard()
     .text('🇷🇺 Русский', 'lang:ru')
     .text('🇬🇧 English', 'lang:en')
-    .row()
-    .text('⬅ Назад', 'back')
-    .text('🏠 Главное меню', 'main_menu');
+    .row();
+  addBack(kb);
+  return addMainMenu(kb);
 }
 
 export function notificationsKeyboard(currentState: boolean) {
   const label = currentState ? '🔔 Включены' : '🔕 Выключены';
-  return new InlineKeyboard()
+  const kb = new InlineKeyboard()
     .text(currentState ? '🔕 Выключить' : '🔔 Включить', 'toggle_notifications')
     .row()
     .text(`Статус: ${label}`, 'noop')
-    .row()
-    .text('⬅ Назад', 'back')
-    .text('🏠 Главное меню', 'main_menu');
+    .row();
+  addBack(kb);
+  return addMainMenu(kb);
 }
 
 export function securityKeyboard() {
-  return new InlineKeyboard()
+  const kb = new InlineKeyboard()
     .text('🔑 Сменить PIN-код', 'change_pin')
-    .row()
-    .text('⬅ Назад', 'back')
-    .text('🏠 Главное меню', 'main_menu');
+    .row();
+  addBack(kb);
+  return addMainMenu(kb);
 }
 
 export function bonusesKeyboard() {
-  return new InlineKeyboard()
+  const kb = new InlineKeyboard()
     .text('🎁 Доступные бонусы', 'available_bonuses')
     .text('📜 История бонусов', 'bonus_history')
-    .row()
-    .text('⬅ Назад', 'back')
-    .text('🏠 Главное меню', 'main_menu');
+    .row();
+  addBack(kb);
+  return addMainMenu(kb);
 }
 
 export function confirmCancelKeyboard() {
-  return new InlineKeyboard()
+  const kb = new InlineKeyboard()
     .text('✅ Подтвердить', 'confirm')
     .text('❌ Отмена', 'cancel')
-    .row()
-    .text('⬅ Назад', 'back')
-    .text('🏠 Главное меню', 'main_menu');
+    .row();
+  addBack(kb);
+  return addMainMenu(kb);
 }
 export function depositAdminKeyboard(depositId: bigint) {
   return new InlineKeyboard()
