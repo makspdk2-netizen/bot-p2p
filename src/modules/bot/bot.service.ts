@@ -19,10 +19,12 @@ import {
   buildUnknownCommandMessage,
   escapeHtml 
 } from '../../common/utils/messages';
-import { mainReplyKeyboard } from '../../common/utils/keyboards';
+import { mainReplyKeyboard, MAIN_MENU_BUTTON_TEXT } from '../../common/utils/keyboards';
 import { banksKeyboard } from '../../common/utils/keyboards';
 import { buildSelectBankMessage } from '../../common/utils/messages';
 import { PaymentRequestsService } from '../payment-requests/payment-requests.service';
+import { RatesService } from '../../config/rates.service';
+import { getEffectiveMarkupPercent, getUserRateFromApiRate, USER_BONUS_PERCENT } from '../../config/rates.config';
 @Injectable()
 export class BotService implements OnModuleInit, OnModuleDestroy {
   private bot!: Bot;
@@ -42,6 +44,7 @@ export class BotService implements OnModuleInit, OnModuleDestroy {
     private settingsScreen: SettingsScreen,
     private supportScreen: SupportScreen,
     private paymentRequests: PaymentRequestsService,
+    private ratesService: RatesService,
   ) {}
 
   async onModuleInit() {
@@ -137,6 +140,18 @@ this.bot.hears('⚙️ Настройки', async (ctx) => {
 
   await this.depositScreen.showCurrencies(ctx, user);
 });
+    this.bot.hears(MAIN_MENU_BUTTON_TEXT, async (ctx) => {
+      if (!ctx.from) return;
+
+      const user = await this.prisma.user.findUnique({
+        where: { telegramId: ctx.from.id },
+      });
+
+      if (!user) return;
+
+      await this.mainMenuScreen.show(ctx, user);
+    });
+
     this.bot.on('message:text', async (ctx) => {
       await this.handleTextMessage(ctx);
       
@@ -383,9 +398,9 @@ if (data === 'add_requisites') {
         step: 'admin_deposit_amount',
         depositId: depositId.toString(),
       });
-      await ctx.reply(`Введите сумму в рублях для зачисления по депозиту #${deposit.id}:`);
+      await ctx.reply(`Введите сумму депозита в ${deposit.currency.toUpperCase()} для расчёта зачисления по депозиту #${deposit.id}:`);
       await ctx.editMessageText(`⏳ Депозит #${deposit.id}: ожидается сумма от администратора.`);
-      await ctx.answerCallbackQuery({ text: 'Введите сумму в рублях' });
+      await ctx.answerCallbackQuery({ text: `Введите сумму в ${deposit.currency.toUpperCase()}` });
       return;
     }
 
@@ -924,9 +939,9 @@ if (data.startsWith('delete_card:')) {
         step: 'admin_deposit_amount',
         depositId: depositId.toString(),
       });
-      await ctx.reply(`Введите сумму в рублях для зачисления по депозиту #${deposit.id}:`);
+      await ctx.reply(`Введите сумму депозита в ${deposit.currency.toUpperCase()} для расчёта зачисления по депозиту #${deposit.id}:`);
       await ctx.editMessageText(`⏳ Депозит #${deposit.id}: ожидается сумма от администратора.`);
-      await ctx.answerCallbackQuery({ text: 'Введите сумму в рублях' });
+      await ctx.answerCallbackQuery({ text: `Введите сумму в ${deposit.currency.toUpperCase()}` });
       return;
     }
 
@@ -1040,8 +1055,8 @@ if (data.startsWith('delete_card:')) {
     const amount = Number(text.trim().replace(',', '.'));
     const depositIdValue = String(adminSession.depositId ?? '');
 
-    if (!Number.isFinite(amount) || amount <= 0 || !/^\d+(?:[.,]\d{1,2})?$/.test(text.trim())) {
-      await ctx.reply('Введите корректную сумму в рублях, например: 1500 или 1500,50.');
+    if (!Number.isFinite(amount) || amount <= 0 || !/^\d+(?:[.,]\d{1,8})?$/.test(text.trim())) {
+      await ctx.reply('Введите корректную сумму монеты, например: 100 или 0,015.');
       return;
     }
 
@@ -1054,10 +1069,38 @@ if (data.startsWith('delete_card:')) {
       return;
     }
 
+    const pendingDeposit = await this.prisma.deposit.findUnique({
+      where: { id: depositId },
+      select: { currency: true },
+    });
+
+    if (!pendingDeposit) {
+      await this.redis.clearSession(ctx.from!.id);
+      await ctx.reply('Депозит не найден. Начните обработку заново.');
+      return;
+    }
+
+    let apiRate: number;
+    let userRate: number;
+    try {
+      apiRate = await this.ratesService.getApiRate(pendingDeposit.currency);
+      userRate = getUserRateFromApiRate(apiRate);
+    } catch {
+      await ctx.reply('Не удалось получить актуальный курс. Депозит не обработан, попробуйте ещё раз.');
+      return;
+    }
+
+    const amountRub = amount * userRate;
     const result = await this.prisma.$transaction(async (tx) => {
       const claimed = await tx.deposit.updateMany({
         where: { id: depositId, status: 'pending' },
-        data: { status: 'completed', amount },
+        data: {
+          status: 'completed',
+          amount,
+          rateRub: userRate,
+          amountRub,
+          markup: getEffectiveMarkupPercent(),
+        },
       });
 
       if (claimed.count !== 1) return null;
@@ -1069,7 +1112,7 @@ if (data.startsWith('delete_card:')) {
 
       await tx.user.update({
         where: { id: deposit.userId },
-        data: { balance: { increment: amount } },
+        data: { balance: { increment: amountRub } },
       });
 
       await tx.operation.create({
@@ -1078,7 +1121,7 @@ if (data.startsWith('delete_card:')) {
           type: 'deposit',
           currency: 'RUB',
           amount,
-          amountRub: amount,
+          amountRub,
           status: 'completed',
           description: `Пополнение по депозиту #${deposit.id}`,
         },
@@ -1094,10 +1137,10 @@ if (data.startsWith('delete_card:')) {
       return;
     }
 
-    await ctx.reply(`✅ На баланс пользователя зачислено ${amount.toFixed(2)} ₽.`);
+    await ctx.reply(`✅ Начислено ${amountRub.toFixed(2)} RUB за ${amount} ${result.currency}. Курс: ${userRate.toFixed(2)} RUB. Бонус: +${USER_BONUS_PERCENT}%.`);
     await ctx.api.sendMessage(
       Number(result.user.telegramId),
-      `✅ Баланс пополнен на ${amount.toFixed(2)} ₽.`,
+      `✅ Баланс пополнен на ${amountRub.toFixed(2)} RUB (${amount} ${result.currency}). Курс с бонусом: ${userRate.toFixed(2)} RUB.`,
     );
   }
 
