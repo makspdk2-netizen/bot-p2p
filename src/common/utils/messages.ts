@@ -1,4 +1,7 @@
 import { USER_BONUS_PERCENT, formatRatePercent } from '../../config/rates.config';
+import { formatMoney, formatRub } from './money';
+
+export { formatMoney, formatRub };
 
 export function escapeHtml(text: string): string {
   return text
@@ -7,26 +10,39 @@ export function escapeHtml(text: string): string {
     .replace(/>/g, '&gt;');
 }
 
-export function formatRub(amount: number): string {
-  return amount.toLocaleString('ru-RU', { minimumFractionDigits: 0, maximumFractionDigits: 2 }) + ' RUB';
+function pad2(value: number): string {
+  return String(value).padStart(2, '0');
 }
 
 export function formatDate(date: Date): string {
-  return date.toLocaleDateString('ru-RU', {
-    day: '2-digit',
-    month: '2-digit',
-    year: 'numeric',
-  });
+  return `${pad2(date.getDate())}.${pad2(date.getMonth() + 1)}.${date.getFullYear()}`;
 }
 
 export function formatDateTime(date: Date): string {
-  return date.toLocaleString('ru-RU', {
-    day: '2-digit',
-    month: '2-digit',
-    year: 'numeric',
-    hour: '2-digit',
-    minute: '2-digit',
-  });
+  return `${formatDate(date)} ${pad2(date.getHours())}:${pad2(date.getMinutes())}`;
+}
+
+export const PAYMENT_REQUEST_STATUS_LABELS: Record<string, string> = {
+  pending_user: 'Ожидает подтверждения',
+  awaiting_proof: 'Ожидает доказательство',
+  under_review: 'На проверке',
+  completed: 'Завершена',
+  rejected: 'Отклонена',
+  expired: 'Истекла',
+};
+
+export const DEPOSIT_STATUS_LABELS: Record<string, string> = {
+  pending: 'Ожидает',
+  completed: 'Завершено',
+  rejected: 'Отклонено',
+};
+
+export function paymentRequestStatusLabel(status: string): string {
+  return PAYMENT_REQUEST_STATUS_LABELS[status] || status;
+}
+
+export function depositStatusLabel(status: string): string {
+  return DEPOSIT_STATUS_LABELS[status] || status;
 }
 
 export function buildBalanceMessage(
@@ -141,10 +157,20 @@ export function buildHistoryMessage(
 ━━━━━━━━━━━━━━━━━━\n`;
 
   operations.forEach((op) => {
-    const emoji = op.type === 'deposit' ? '🟢' : op.type === 'withdrawal' ? '🔴' : op.type === 'bonus' ? '🎁' : '👥';
-    const typeLabel = op.type === 'deposit' ? 'Пополнение' : op.type === 'withdrawal' ? 'Вывод' : op.type === 'bonus' ? 'Бонус' : 'Партнёрские';
+    const emoji =
+      op.type === 'deposit' ? '🟢' :
+      op.type === 'withdrawal' || op.type === 'payment_request' ? '🔴' :
+      op.type === 'bonus' ? '🎁' :
+      '👥';
+    const typeLabel =
+      op.type === 'deposit' ? 'Пополнение' :
+      op.type === 'withdrawal' ? 'Вывод' :
+      op.type === 'payment_request' ? 'Заявка' :
+      op.type === 'bonus' ? 'Бонус' :
+      op.type === 'referral_bonus' ? 'Реферальный бонус' :
+      'Партнёрские';
     const currencyInfo = op.currency ? ` ${op.currency}` : '';
-    const sign = op.type === 'deposit' || op.type === 'bonus' || op.type === 'partner_earning' ? '+' : '−';
+    const sign = op.type === 'deposit' || op.type === 'bonus' || op.type === 'partner_earning' || op.type === 'referral_bonus' ? '+' : '−';
 
     message += `\n${emoji} <b>${typeLabel}${currencyInfo}</b>
 ${sign}${formatRub(op.amountRub)}
@@ -479,6 +505,119 @@ export function buildUnknownCommandMessage(): string {
 ━━━━━━━━━━━━━━━━━━
 
 Пожалуйста, используйте кнопки меню для навигации.`;
+}
+
+export function buildProfileMessage(params: {
+  telegramId: string;
+  username: string | null;
+  balance: number;
+  referralCount: number;
+  referralEarned: number;
+  createdAt: Date;
+}): string {
+  const username = params.username ? `@${escapeHtml(params.username)}` : 'не указан';
+
+  return `<tg-emoji emoji-id="5282843764451195532">👤</tg-emoji> <b>Мой профиль</b>
+
+━━━━━━━━━━━━━━━━━━
+
+<b>ID:</b> <code>${escapeHtml(params.telegramId)}</code>
+<b>Username:</b> ${username}
+
+💰 <b>Баланс:</b> ${formatRub(params.balance)}
+
+👥 <b>Рефералы:</b> ${params.referralCount}
+💵 <b>Заработано с рефералов:</b> ${formatRub(params.referralEarned)}
+
+📅 <b>Регистрация:</b> ${formatDate(params.createdAt)}`;
+}
+
+export function buildDepositHistoryMessage(
+  deposits: { amountRub: number | null; status: string; createdAt: Date }[],
+  page: number,
+  totalPages: number,
+): string {
+  if (deposits.length === 0) {
+    return `📭 История пополнений пуста.`;
+  }
+
+  let message = `📥 <b>История пополнений</b>
+
+━━━━━━━━━━━━━━━━━━
+`;
+
+  deposits.forEach((deposit) => {
+    const amount = deposit.amountRub == null ? 'ожидается' : formatRub(deposit.amountRub);
+    message += `
+📥 <b>Пополнение</b>
+Сумма: ${amount}
+Статус: ${depositStatusLabel(deposit.status)}
+Дата: ${formatDateTime(deposit.createdAt)}
+━━━━━━━━━━━━━━━━━━
+`;
+  });
+
+  if (totalPages > 1) {
+    message += `\nСтраница ${page + 1} из ${totalPages}`;
+  }
+
+  return message;
+}
+
+export function buildPaymentRequestHistoryMessage(
+  requests: { code: string; amount: number; status: string; createdAt: Date }[],
+  page: number,
+  totalPages: number,
+): string {
+  if (requests.length === 0) {
+    return `📭 История заявок пуста.`;
+  }
+
+  let message = `📋 <b>История заявок</b>
+
+━━━━━━━━━━━━━━━━━━
+`;
+
+  requests.forEach((request) => {
+    message += `
+📋 <b>Заявка #${escapeHtml(request.code)}</b>
+Сумма: ${formatRub(request.amount)}
+Статус: ${paymentRequestStatusLabel(request.status)}
+Дата: ${formatDateTime(request.createdAt)}
+━━━━━━━━━━━━━━━━━━
+`;
+  });
+
+  if (totalPages > 1) {
+    message += `\nСтраница ${page + 1} из ${totalPages}`;
+  }
+
+  return message;
+}
+
+export function buildMyReferralsMessage(
+  referrals: { displayName: string; earned: number }[],
+  totalEarned: number,
+): string {
+  if (referrals.length === 0) {
+    return `👥 У вас пока нет рефералов.`;
+  }
+
+  let message = `👥 <b>Мои рефералы</b>
+
+━━━━━━━━━━━━━━━━━━
+`;
+
+  referrals.forEach((referral) => {
+    message += `
+👤 ${escapeHtml(referral.displayName)}
+💰 Заработано: ${formatRub(referral.earned)}
+━━━━━━━━━━━━━━━━━━
+`;
+  });
+
+  message += `\n💵 <b>Всего заработано:</b> ${formatRub(totalEarned)}`;
+  return message;
 }
 
 

@@ -27,7 +27,8 @@ model User {
   supportTickets       SupportTicket[]
   bonuses              Bonus[]
   partnerCode          PartnerCode?
-  partnerEarnings      PartnerEarning[]
+  partnerEarnings      PartnerEarning[] @relation("PartnerEarningReceiver")
+  partnerEarningsFrom  PartnerEarning[] @relation("PartnerEarningReferred")
   referralsGiven       ReferredUser[]   @relation("Referrer")
   referralRecord       ReferredUser?    @relation("Referred")
 
@@ -87,12 +88,17 @@ model ReferredUser {
 }
 
 model PartnerEarning {
-  id        BigInt   @id @default(autoincrement())
-  userId    BigInt   @map("user_id")
-  amount    Decimal  @db.Decimal(20, 8)
-  createdAt DateTime @default(now()) @map("created_at")
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  id               BigInt          @id @default(autoincrement())
+  userId           BigInt          @map("user_id")
+  referredId       BigInt?         @map("referred_id")
+  paymentRequestId BigInt?         @unique @map("payment_request_id")
+  amount           Decimal         @db.Decimal(20, 8)
+  createdAt        DateTime        @default(now()) @map("created_at")
+  user             User            @relation("PartnerEarningReceiver", fields: [userId], references: [id], onDelete: Cascade)
+  referred         User?           @relation("PartnerEarningReferred", fields: [referredId], references: [id], onDelete: SetNull)
+  paymentRequest   PaymentRequest? @relation(fields: [paymentRequestId], references: [id], onDelete: SetNull)
 
+  @@index([userId, referredId])
   @@map("partner_earnings")
 }
 
@@ -185,8 +191,9 @@ model PaymentRequest {
   updatedAt      DateTime     @updatedAt @map("updated_at")
   user           User         @relation(fields: [userId], references: [id], onDelete: Cascade)
   requisite      Requisite    @relation(fields: [requisiteId], references: [id], onDelete: Cascade)
-  messages       PaymentRequestMessage[]
-  proofs         PaymentRequestProof[]
+  messages         PaymentRequestMessage[]
+  proofs           PaymentRequestProof[]
+  partnerEarnings  PartnerEarning[]
 
   @@index([status, deadline])
   @@index([userId, createdAt])
