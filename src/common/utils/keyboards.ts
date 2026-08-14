@@ -7,8 +7,15 @@ export const PREMIUM_HOME_EMOJI_ID = '5240118799885158175';
 export const PREMIUM_SENT_EMOJI_ID = '5206607081334906820';
 export const PREMIUM_DIAMOND_EMOJI_ID = '5467432173113974705';
 export const PREMIUM_CARD_EMOJI_ID = '5215420556089776398';
+export const PREMIUM_PROFILE_EMOJI_ID = '5282843764451195532';
+export const PREMIUM_DEPOSIT_HISTORY_EMOJI_ID = '5377336227533969892';
+export const PREMIUM_REQUEST_HISTORY_EMOJI_ID = '5204242830687494041';
+export const PREMIUM_REFERRAL_EMOJI_ID = '5332724926216428039';
+export const PREMIUM_CALENDAR_EMOJI_ID = '5413879192267805083';
+export const PREMIUM_BALANCE_EMOJI_ID = PREMIUM_CARD_EMOJI_ID;
 export const MAIN_MENU_BUTTON_TEXT = 'Главное меню';
-export const PROFILE_BUTTON_TEXT = '👤 Профиль';
+export const PROFILE_BUTTON_TEXT = 'Профиль';
+export const PROFILE_BUTTON_TEXT_LEGACY = '👤 Профиль';
 
 function addBack(kb: InlineKeyboard, callbackData = 'back') {
   return kb.add({ text: 'Назад', callback_data: callbackData, icon_custom_emoji_id: PREMIUM_BACK_EMOJI_ID });
@@ -42,7 +49,7 @@ export function mainReplyKeyboard() {
     .row()
     .add({
       text: PROFILE_BUTTON_TEXT,
-      icon_custom_emoji_id: '5282843764451195532',
+      icon_custom_emoji_id: PREMIUM_PROFILE_EMOJI_ID,
     })
     .add({
       text: MAIN_MENU_BUTTON_TEXT,
@@ -233,11 +240,23 @@ export function partnersKeyboard() {
 
 export function profileKeyboard() {
   const kb = new InlineKeyboard()
-    .text('📥 История пополнений', 'profile_deposits')
+    .add({
+      text: 'История пополнений',
+      callback_data: 'profile_deposits',
+      icon_custom_emoji_id: PREMIUM_DEPOSIT_HISTORY_EMOJI_ID,
+    })
     .row()
-    .text('📋 История заявок', 'profile_requests')
+    .add({
+      text: 'История заявок',
+      callback_data: 'profile_requests',
+      icon_custom_emoji_id: PREMIUM_REQUEST_HISTORY_EMOJI_ID,
+    })
     .row()
-    .text('👥 Мои рефералы', 'profile_referrals')
+    .add({
+      text: 'Мои рефералы',
+      callback_data: 'profile_referrals',
+      icon_custom_emoji_id: PREMIUM_REFERRAL_EMOJI_ID,
+    })
     .row();
   addBack(kb);
   return kb;

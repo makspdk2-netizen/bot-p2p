@@ -524,12 +524,12 @@ export function buildProfileMessage(params: {
 <b>ID:</b> <code>${escapeHtml(params.telegramId)}</code>
 <b>Username:</b> ${username}
 
-💰 <b>Баланс:</b> ${formatRub(params.balance)}
+<tg-emoji emoji-id="5215420556089776398">💳</tg-emoji> <b>Баланс:</b> ${formatRub(params.balance)}
 
-👥 <b>Рефералы:</b> ${params.referralCount}
-💵 <b>Заработано с рефералов:</b> ${formatRub(params.referralEarned)}
+<tg-emoji emoji-id="5332724926216428039">👥</tg-emoji> <b>Рефералы:</b> ${params.referralCount}
+<tg-emoji emoji-id="5332724926216428039">💵</tg-emoji> <b>Заработано с рефералов:</b> ${formatRub(params.referralEarned)}
 
-📅 <b>Регистрация:</b> ${formatDate(params.createdAt)}`;
+<tg-emoji emoji-id="5413879192267805083">📅</tg-emoji> <b>Регистрация:</b> ${formatDate(params.createdAt)}`;
 }
 
 export function buildDepositHistoryMessage(
@@ -538,10 +538,10 @@ export function buildDepositHistoryMessage(
   totalPages: number,
 ): string {
   if (deposits.length === 0) {
-    return `📭 История пополнений пуста.`;
+    return `<tg-emoji emoji-id="5377336227533969892">📥</tg-emoji> История пополнений пуста.`;
   }
 
-  let message = `📥 <b>История пополнений</b>
+  let message = `<tg-emoji emoji-id="5377336227533969892">📥</tg-emoji> <b>История пополнений</b>
 
 ━━━━━━━━━━━━━━━━━━
 `;
@@ -549,10 +549,10 @@ export function buildDepositHistoryMessage(
   deposits.forEach((deposit) => {
     const amount = deposit.amountRub == null ? 'ожидается' : formatRub(deposit.amountRub);
     message += `
-📥 <b>Пополнение</b>
-Сумма: ${amount}
+<tg-emoji emoji-id="5377336227533969892">📥</tg-emoji> <b>Пополнение</b>
+<tg-emoji emoji-id="5215420556089776398">💰</tg-emoji> Сумма: ${amount}
 Статус: ${depositStatusLabel(deposit.status)}
-Дата: ${formatDateTime(deposit.createdAt)}
+<tg-emoji emoji-id="5413879192267805083">📅</tg-emoji> Дата: ${formatDateTime(deposit.createdAt)}
 ━━━━━━━━━━━━━━━━━━
 `;
   });
@@ -570,20 +570,20 @@ export function buildPaymentRequestHistoryMessage(
   totalPages: number,
 ): string {
   if (requests.length === 0) {
-    return `📭 История заявок пуста.`;
+    return `<tg-emoji emoji-id="5204242830687494041">📋</tg-emoji> История заявок пуста.`;
   }
 
-  let message = `📋 <b>История заявок</b>
+  let message = `<tg-emoji emoji-id="5204242830687494041">📋</tg-emoji> <b>История заявок</b>
 
 ━━━━━━━━━━━━━━━━━━
 `;
 
   requests.forEach((request) => {
     message += `
-📋 <b>Заявка #${escapeHtml(request.code)}</b>
-Сумма: ${formatRub(request.amount)}
+<tg-emoji emoji-id="5204242830687494041">📋</tg-emoji> <b>Заявка #${escapeHtml(request.code)}</b>
+<tg-emoji emoji-id="5215420556089776398">💰</tg-emoji> Сумма: ${formatRub(request.amount)}
 Статус: ${paymentRequestStatusLabel(request.status)}
-Дата: ${formatDateTime(request.createdAt)}
+<tg-emoji emoji-id="5413879192267805083">📅</tg-emoji> Дата: ${formatDateTime(request.createdAt)}
 ━━━━━━━━━━━━━━━━━━
 `;
   });
@@ -600,23 +600,23 @@ export function buildMyReferralsMessage(
   totalEarned: number,
 ): string {
   if (referrals.length === 0) {
-    return `👥 У вас пока нет рефералов.`;
+    return `<tg-emoji emoji-id="5332724926216428039">👥</tg-emoji> У вас пока нет рефералов.`;
   }
 
-  let message = `👥 <b>Мои рефералы</b>
+  let message = `<tg-emoji emoji-id="5332724926216428039">👥</tg-emoji> <b>Мои рефералы</b>
 
 ━━━━━━━━━━━━━━━━━━
 `;
 
   referrals.forEach((referral) => {
     message += `
-👤 ${escapeHtml(referral.displayName)}
-💰 Заработано: ${formatRub(referral.earned)}
+<tg-emoji emoji-id="5282843764451195532">👤</tg-emoji> ${escapeHtml(referral.displayName)}
+<tg-emoji emoji-id="5215420556089776398">💰</tg-emoji> Заработано: ${formatRub(referral.earned)}
 ━━━━━━━━━━━━━━━━━━
 `;
   });
 
-  message += `\n💵 <b>Всего заработано:</b> ${formatRub(totalEarned)}`;
+  message += `\n<tg-emoji emoji-id="5215420556089776398">💵</tg-emoji> <b>Всего заработано:</b> ${formatRub(totalEarned)}`;
   return message;
 }
 

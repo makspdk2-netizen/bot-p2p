@@ -21,7 +21,7 @@ import {
   escapeHtml 
 } from '../../common/utils/messages';
 import { formatRub } from '../../common/utils/money';
-import { mainReplyKeyboard, MAIN_MENU_BUTTON_TEXT, PROFILE_BUTTON_TEXT } from '../../common/utils/keyboards';
+import { mainReplyKeyboard, MAIN_MENU_BUTTON_TEXT, PROFILE_BUTTON_TEXT, PROFILE_BUTTON_TEXT_LEGACY } from '../../common/utils/keyboards';
 import { banksKeyboard } from '../../common/utils/keyboards';
 import { buildSelectBankMessage } from '../../common/utils/messages';
 import { PaymentRequestsService } from '../payment-requests/payment-requests.service';
@@ -118,7 +118,7 @@ this.bot.hears('Поддержка', async (ctx) => {
   await this.supportScreen.show(ctx, user);
 });
 
-this.bot.hears(PROFILE_BUTTON_TEXT, async (ctx) => {
+this.bot.hears([PROFILE_BUTTON_TEXT, PROFILE_BUTTON_TEXT_LEGACY], async (ctx) => {
   if (!ctx.from) return;
 
   const user = await this.prisma.user.findUnique({
