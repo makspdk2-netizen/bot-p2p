@@ -534,7 +534,7 @@ async receiveHolder(
     `
 <tg-emoji emoji-id="5472250091332993630">💳</tg-emoji> <b>Карта успешно добавлена!</b>
 
-❗️ <a href="https://telegra.ph/Instrukciya-po-rabote-s-P2P-rekvizitami-06-29">Обязательно прочитайте рекомендации по работе с OnlyP2P</a>
+❗️ <a href="telegra.ph/Instrukciya-po-rabote-s-P2P-rekvizitami-07-27 (http://telegra.ph/Instrukciya-po-rabote-s-P2P-rekvizitami-07-27)">Обязательно прочитайте рекомендации по работе с EpicP2P</a>
 
 Чтобы начать продажу криптовалюты на эту карту, активируйте её кнопкой ниже.
 `,

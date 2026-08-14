@@ -75,8 +75,8 @@ export function backKeyboard() {
 export function depositCurrenciesKeyboard() {
   return new InlineKeyboard()
     .add({
-      text: '🔵 Как пополнить',
-      url: 'https://google.com',
+      text: 'Как пополнить',
+      url: 'https://telegra.ph/Kak-popolnit-EpicP2P-08-14',
       style: 'primary',
     })
     .row()

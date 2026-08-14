@@ -527,7 +527,7 @@ export function buildProfileMessage(params: {
 <tg-emoji emoji-id="5215420556089776398">💳</tg-emoji> <b>Баланс:</b> ${formatRub(params.balance)}
 
 <tg-emoji emoji-id="5332724926216428039">👥</tg-emoji> <b>Рефералы:</b> ${params.referralCount}
-<tg-emoji emoji-id="5332724926216428039">💵</tg-emoji> <b>Заработано с рефералов:</b> ${formatRub(params.referralEarned)}
+<tg-emoji emoji-id="5244837092042750681">💵</tg-emoji> <b>Заработано с рефералов:</b> ${formatRub(params.referralEarned)}
 
 <tg-emoji emoji-id="5413879192267805083">📅</tg-emoji> <b>Регистрация:</b> ${formatDate(params.createdAt)}`;
 }
@@ -638,7 +638,7 @@ export function buildCardAddedMessage(): string {
   return `
 <tg-emoji emoji-id="5206607081334906820">💳</tg-emoji><b>Карта успешно добавлена!</b>
 
-❗️ <a href="https://telegra.ph/Instrukciya-po-rabote-s-P2P-rekvizitami-06-29">Обязательно прочитайте рекомендации по работе с EPIC P2P</a>
+❗️ <a href="telegra.ph/Instrukciya-po-rabote-s-P2P-rekvizitami-07-27 (http://telegra.ph/Instrukciya-po-rabote-s-P2P-rekvizitami-07-27)">Обязательно прочитайте рекомендации по работе с EPIC P2P</a>
 
 Чтобы начать продажу криптовалюты на эту карту, активируйте её кнопкой ниже<tg-emoji emoji-id="5406745015365943482">💳</tg-emoji>
 `;
