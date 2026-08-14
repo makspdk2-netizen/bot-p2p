@@ -5,7 +5,7 @@ import { PrismaService } from '../../prisma/prisma.service';
 import { RedisService } from '../../redis/redis.service';
 import { ConfigService } from '../../config/config.service';
 import { CURRENCIES } from '../../common/constants/currencies';
-import { buildDepositMessage, escapeHtml } from '../../common/utils/messages';
+import { buildDepositMessage, escapeHtml, formatMoney, formatRub } from '../../common/utils/messages';
 import { editOrReply } from '../../common/utils/edit-or-reply';
 import {
   depositCurrenciesKeyboard,
@@ -44,15 +44,12 @@ export class DepositScreen {
   });
 
 
-  const balance = dbUser?.balance ?? 0;
+  const balance = Number(dbUser?.balance ?? 0);
 
   let ratesBlock = `<blockquote>💱 Актуальный курс временно недоступен.</blockquote>`;
   try {
     const rates = await this.ratesService.getDisplayRates();
-    const formatRate = (value: number) => value.toLocaleString('ru-RU', {
-      minimumFractionDigits: 2,
-      maximumFractionDigits: 2,
-    });
+    const formatRate = (value: number) => formatMoney(value);
 
     ratesBlock = `<blockquote><tg-emoji emoji-id="5379773896352355687">💳</tg-emoji>1 BTC: ${formatRate(rates.btc)} RUB
 <tg-emoji emoji-id="5202064723922670546">💳</tg-emoji>1 LTC: ${formatRate(rates.ltc)} RUB
@@ -65,7 +62,7 @@ export class DepositScreen {
 
   const message = `
 
- <tg-emoji emoji-id="5201873447554145566">💳</tg-emoji> Ваш баланс: ${balance} ₽
+ <tg-emoji emoji-id="5201873447554145566">💳</tg-emoji> Ваш баланс: ${formatRub(balance)}
 
 <tg-emoji emoji-id="5462902520215002477">💳</tg-emoji> Доплата за пополнение: +${formatRatePercent(USER_BONUS_PERCENT)}
 
@@ -273,7 +270,7 @@ async acceptDeposit(
 
   await ctx.api.sendMessage(
     Number(deposit.userId),
-    `✅ Ваш депозит на сумму ${deposit.amount} ${deposit.currency} подтвержден и зачислен на баланс.`,
+    `✅ Ваш депозит на сумму ${deposit.amount == null ? '—' : formatMoney(deposit.amount)} ${deposit.currency} подтвержден и зачислен на баланс.`,
   );
 }
 

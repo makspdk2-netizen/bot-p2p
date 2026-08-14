@@ -39,28 +39,28 @@ export class BalanceScreen {
       where: { userId: BigInt(userId), createdAt: { gte: startOfDay } },
     });
     const todayEarned = todayOps
-      .filter((op) => op.type === 'deposit' || op.type === 'bonus' || op.type === 'partner_earning')
+      .filter((op) => op.type === 'deposit' || op.type === 'bonus' || op.type === 'partner_earning' || op.type === 'referral_bonus')
       .reduce((sum, op) => sum + Number(op.amountRub), 0);
 
     const weekOps = await this.prisma.operation.findMany({
       where: { userId: BigInt(userId), createdAt: { gte: startOfWeek } },
     });
     const weekEarned = weekOps
-      .filter((op) => op.type === 'deposit' || op.type === 'bonus' || op.type === 'partner_earning')
+      .filter((op) => op.type === 'deposit' || op.type === 'bonus' || op.type === 'partner_earning' || op.type === 'referral_bonus')
       .reduce((sum, op) => sum + Number(op.amountRub), 0);
 
     const monthOps = await this.prisma.operation.findMany({
       where: { userId: BigInt(userId), createdAt: { gte: startOfMonth } },
     });
     const monthEarned = monthOps
-      .filter((op) => op.type === 'deposit' || op.type === 'bonus' || op.type === 'partner_earning')
+      .filter((op) => op.type === 'deposit' || op.type === 'bonus' || op.type === 'partner_earning' || op.type === 'referral_bonus')
       .reduce((sum, op) => sum + Number(op.amountRub), 0);
 
     const allOps = await this.prisma.operation.findMany({
       where: { userId: BigInt(userId) },
     });
     const totalEarned = allOps
-      .filter((op) => op.type === 'deposit' || op.type === 'bonus' || op.type === 'partner_earning')
+      .filter((op) => op.type === 'deposit' || op.type === 'bonus' || op.type === 'partner_earning' || op.type === 'referral_bonus')
       .reduce((sum, op) => sum + Number(op.amountRub), 0);
 
     const message = buildBalanceMessage(

@@ -8,6 +8,7 @@ export const PREMIUM_SENT_EMOJI_ID = '5206607081334906820';
 export const PREMIUM_DIAMOND_EMOJI_ID = '5467432173113974705';
 export const PREMIUM_CARD_EMOJI_ID = '5215420556089776398';
 export const MAIN_MENU_BUTTON_TEXT = 'Главное меню';
+export const PROFILE_BUTTON_TEXT = '👤 Профиль';
 
 function addBack(kb: InlineKeyboard, callbackData = 'back') {
   return kb.add({ text: 'Назад', callback_data: callbackData, icon_custom_emoji_id: PREMIUM_BACK_EMOJI_ID });
@@ -40,6 +41,10 @@ export function mainReplyKeyboard() {
     })
     .row()
     .add({
+      text: PROFILE_BUTTON_TEXT,
+      icon_custom_emoji_id: '5282843764451195532',
+    })
+    .add({
       text: MAIN_MENU_BUTTON_TEXT,
       icon_custom_emoji_id: PREMIUM_HOME_EMOJI_ID,
     })
@@ -62,6 +67,12 @@ export function backKeyboard() {
 
 export function depositCurrenciesKeyboard() {
   return new InlineKeyboard()
+    .add({
+      text: '🔵 Как пополнить',
+      url: 'https://google.com',
+      style: 'primary',
+    })
+    .row()
     .add({
       text: 'BTC',
       callback_data: 'deposit:btc',
@@ -218,6 +229,33 @@ export function partnersKeyboard() {
     .row();
   addBack(kb);
   return addMainMenu(kb);
+}
+
+export function profileKeyboard() {
+  const kb = new InlineKeyboard()
+    .text('📥 История пополнений', 'profile_deposits')
+    .row()
+    .text('📋 История заявок', 'profile_requests')
+    .row()
+    .text('👥 Мои рефералы', 'profile_referrals')
+    .row();
+  addBack(kb);
+  return kb;
+}
+
+export function profileSubKeyboard(pagePrefix?: string, page = 0, totalPages = 1) {
+  const kb = new InlineKeyboard();
+  if (pagePrefix && totalPages > 1) {
+    const navRow = [];
+    if (page > 0) navRow.push({ text: '⬅', callback_data: `${pagePrefix}:${page - 1}` });
+    if (page < totalPages - 1) navRow.push({ text: '➡', callback_data: `${pagePrefix}:${page + 1}` });
+    if (navRow.length > 0) {
+      kb.row(...navRow.map((button) => InlineKeyboard.text(button.text, button.callback_data)));
+    }
+    kb.row();
+  }
+  addBack(kb, 'profile');
+  return kb;
 }
 
 export function supportKeyboard() {

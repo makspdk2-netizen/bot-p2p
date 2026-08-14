@@ -5,6 +5,7 @@ import { BalanceModule } from '../balance/balance.module';
 import { DepositModule } from '../deposit/deposit.module';
 import { WithdrawalModule } from '../withdrawal/withdrawal.module';
 import { HistoryModule } from '../history/history.module';
+import { ProfileModule } from '../profile/profile.module';
 import { RequisitesModule } from '../requisites/requisites.module';
 import { PartnersModule } from '../partners/partners.module';
 import { BonusesModule } from '../bonuses/bonuses.module';
@@ -20,6 +21,7 @@ import { PaymentRequestsModule } from '../payment-requests/payment-requests.modu
     DepositModule,
     WithdrawalModule,
     HistoryModule,
+    ProfileModule,
     RequisitesModule,
     PartnersModule,
     BonusesModule,

@@ -9,6 +9,7 @@ import { BalanceScreen } from '../balance/balance.screen';
 import { DepositScreen } from '../deposit/deposit.screen';
 import { WithdrawalScreen } from '../withdrawal/withdrawal.screen';
 import { HistoryScreen } from '../history/history.screen';
+import { ProfileScreen } from '../profile/profile.screen';
 import { RequisitesScreen } from '../requisites/requisites.screen';
 import { PartnersScreen } from '../partners/partners.screen';
 import { BonusesScreen } from '../bonuses/bonuses.screen';
@@ -19,7 +20,8 @@ import {
   buildUnknownCommandMessage,
   escapeHtml 
 } from '../../common/utils/messages';
-import { mainReplyKeyboard, MAIN_MENU_BUTTON_TEXT } from '../../common/utils/keyboards';
+import { formatRub } from '../../common/utils/money';
+import { mainReplyKeyboard, MAIN_MENU_BUTTON_TEXT, PROFILE_BUTTON_TEXT } from '../../common/utils/keyboards';
 import { banksKeyboard } from '../../common/utils/keyboards';
 import { buildSelectBankMessage } from '../../common/utils/messages';
 import { PaymentRequestsService } from '../payment-requests/payment-requests.service';
@@ -38,6 +40,7 @@ export class BotService implements OnModuleInit, OnModuleDestroy {
     private depositScreen: DepositScreen,
     private withdrawalScreen: WithdrawalScreen,
     private historyScreen: HistoryScreen,
+    private profileScreen: ProfileScreen,
     private requisitesScreen: RequisitesScreen,
     private partnersScreen: PartnersScreen,
     private bonusesScreen: BonusesScreen,
@@ -113,6 +116,18 @@ this.bot.hears('Поддержка', async (ctx) => {
   if (!user) return;
 
   await this.supportScreen.show(ctx, user);
+});
+
+this.bot.hears(PROFILE_BUTTON_TEXT, async (ctx) => {
+  if (!ctx.from) return;
+
+  const user = await this.prisma.user.findUnique({
+    where: { telegramId: ctx.from.id },
+  });
+
+  if (!user) return;
+
+  await this.profileScreen.show(ctx, user);
 });
 
 
@@ -343,6 +358,10 @@ if (data === 'add_requisites') {
         deposit_address: () => this.depositScreen.showCurrencies(ctx, user),
         withdrawal: () => this.mainMenuScreen.show(ctx, user),
         history: () => this.mainMenuScreen.show(ctx, user),
+        profile: () => this.mainMenuScreen.show(ctx, user),
+        profile_deposits: () => this.profileScreen.show(ctx, user),
+        profile_requests: () => this.profileScreen.show(ctx, user),
+        profile_referrals: () => this.profileScreen.show(ctx, user),
         requisites: () => this.mainMenuScreen.show(ctx, user),
         partners: () => this.mainMenuScreen.show(ctx, user),
         bonuses: () => this.mainMenuScreen.show(ctx, user),
@@ -461,7 +480,7 @@ if (dbUser) {
   Number(dbUser.telegramId),
   `✅ Ваш депозит успешно подтверждён.
 
-💰 На ваш баланс зачислено: ${deposit.amount} ${deposit.currency}.`
+💰 На ваш баланс зачислено: ${deposit.amount ?? 0} ${deposit.currency}.`
 );
 }
 
@@ -792,6 +811,36 @@ if (data.startsWith('delete_card:')) {
       return;
     }
 
+    if (data === 'profile') {
+      await this.profileScreen.show(ctx, user);
+      return;
+    }
+
+    if (data === 'profile_deposits' || data.startsWith('profile_deposits:')) {
+      const page = data.includes(':') ? this.parseNonNegativeInt(data.split(':')[1]) : 0;
+      if (page === null) {
+        await ctx.answerCallbackQuery({ text: 'Некорректная страница' });
+        return;
+      }
+      await this.profileScreen.showDeposits(ctx, user, page);
+      return;
+    }
+
+    if (data === 'profile_requests' || data.startsWith('profile_requests:')) {
+      const page = data.includes(':') ? this.parseNonNegativeInt(data.split(':')[1]) : 0;
+      if (page === null) {
+        await ctx.answerCallbackQuery({ text: 'Некорректная страница' });
+        return;
+      }
+      await this.profileScreen.showRequests(ctx, user, page);
+      return;
+    }
+
+    if (data === 'profile_referrals') {
+      await this.profileScreen.showReferrals(ctx, user);
+      return;
+    }
+
     if (data.startsWith('lang:')) {
       const lang = data.split(':')[1];
       await this.settingsScreen.setLanguage(ctx, user, lang);
@@ -902,6 +951,7 @@ if (data.startsWith('delete_card:')) {
       deposit: () => this.depositScreen.showCurrencies(ctx, user),
       withdrawal: () => this.withdrawalScreen.show(ctx, user),
       history: () => this.historyScreen.show(ctx, user, 0),
+      profile: () => this.profileScreen.show(ctx, user),
       requisites: () => this.requisitesScreen.show(ctx, user),
       partners: () => this.partnersScreen.show(ctx, user),
       bonuses: () => this.bonusesScreen.show(ctx, user),
@@ -1137,10 +1187,10 @@ if (data.startsWith('delete_card:')) {
       return;
     }
 
-    await ctx.reply(`✅ Начислено ${amountRub.toFixed(2)} RUB за ${amount} ${result.currency}. Курс: ${userRate.toFixed(2)} RUB. Бонус: +${USER_BONUS_PERCENT}%.`);
+    await ctx.reply(`✅ Начислено ${formatRub(amountRub)} за ${amount} ${result.currency}. Курс: ${formatRub(userRate)}. Бонус: +${USER_BONUS_PERCENT}%.`);
     await ctx.api.sendMessage(
       Number(result.user.telegramId),
-      `✅ Баланс пополнен на ${amountRub.toFixed(2)} RUB (${amount} ${result.currency}). Курс с бонусом: ${userRate.toFixed(2)} RUB.`,
+      `✅ Баланс пополнен на ${formatRub(amountRub)} (${amount} ${result.currency}). Курс с бонусом: ${formatRub(userRate)}.`,
     );
   }
 

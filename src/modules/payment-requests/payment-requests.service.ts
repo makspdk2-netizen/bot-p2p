@@ -3,6 +3,8 @@ import { Bot, Context } from 'grammy';
 import { randomBytes } from 'crypto';
 import { PrismaService } from '../../prisma/prisma.service';
 import { RedisService } from '../../redis/redis.service';
+import { formatRub } from '../../common/utils/money';
+import { creditReferralBonusForCompletedRequest } from '../partners/credit-referral-bonus';
 
 export const PAYMENT_REQUEST_MINUTES = 15;
 
@@ -498,19 +500,8 @@ export class PaymentRequestsService implements OnModuleDestroy {
     requestId: bigint,
     description: string,
   ) {
-    const request =
-      await this.prisma.paymentRequest.findUnique({
-        where: {
-          id: requestId,
-        },
-      });
-
-    if (!request) {
-      return;
-    }
-
-    const changed =
-      await this.prisma.paymentRequest.updateMany({
+    await this.prisma.$transaction(async (tx) => {
+      const claimed = await tx.paymentRequest.updateMany({
         where: {
           id: requestId,
           status: {
@@ -527,13 +518,37 @@ export class PaymentRequestsService implements OnModuleDestroy {
         },
       });
 
-    if (changed.count === 1) {
-      await this.debit(
-        requestId,
-        Number(request.amount),
-        description,
-      );
-    }
+      if (claimed.count !== 1) {
+        return;
+      }
+
+      const request = await tx.paymentRequest.findUniqueOrThrow({
+        where: { id: requestId },
+      });
+
+      await tx.user.update({
+        where: { id: request.userId },
+        data: {
+          balance: {
+            decrement: request.amount,
+          },
+        },
+      });
+
+      await tx.operation.create({
+        data: {
+          userId: request.userId,
+          type: 'payment_request',
+          amount: request.amount,
+          amountRub: request.amount,
+          currency: 'RUB',
+          status: 'completed',
+          description: `${description}: ${request.code}`,
+        },
+      });
+
+      await creditReferralBonusForCompletedRequest(tx, request);
+    });
   }
 
   private async debit(
@@ -619,7 +634,7 @@ export class PaymentRequestsService implements OnModuleDestroy {
           : request.user.firstName ||
             request.user.telegramId
       }
-Сумма: ${Number(request.amount).toFixed(2)} RUB
+Сумма: ${formatRub(request.amount)}
 Карта: ${request.requisite.bank || 'Банк'} ${
         request.requisite.details
       }`,
@@ -695,7 +710,7 @@ export class PaymentRequestsService implements OnModuleDestroy {
   private requestText(request: any) {
     return `❓ Вам поступили средства по заявке ${request.code}?
 
-Сумма: ${Number(request.amount).toFixed(2)} RUB
+Сумма: ${formatRub(request.amount)}
 Реквизиты: ${request.requisite.details}
 Банк: ${request.requisite.bank || '-'}
 
@@ -716,7 +731,7 @@ export class PaymentRequestsService implements OnModuleDestroy {
   ) {
     return `✅ Заявка ${code} завершена
 
-Сумма ${amount.toFixed(2)} RUB успешно списана с баланса Epic P2P.
+Сумма ${formatRub(amount)} успешно списана с баланса Epic P2P.
 
 Спасибо, что выбрали Epic P2P!`;
   }
@@ -727,7 +742,7 @@ export class PaymentRequestsService implements OnModuleDestroy {
   ) {
     return `✅ Заявка ${code} подтверждена.
 
-Списано ${amount.toFixed(2)} RUB с баланса Epic P2P.`;
+Списано ${formatRub(amount)} с баланса Epic P2P.`;
   }
 
   private generateCode() {
