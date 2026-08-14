@@ -82,7 +82,7 @@ export function depositCurrenciesKeyboard() {
     })
     .row()
     .add({
-      text: 'Gramm',
+      text: 'Gram',
       callback_data: 'deposit:ton',
       icon_custom_emoji_id: '5377620962390857342',
     });

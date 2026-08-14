@@ -4,7 +4,7 @@ export const CURRENCIES = [
   { key: 'usdt_trc20', label: 'USDT TRC20', emoji: '💎' },
   { key: 'usdt_erc20', label: 'USDT ERC20', emoji: '💎' },
   { key: 'usdt_bep20', label: 'USDT BEP20', emoji: '💎' },
-  { key: 'ton', label: 'TON', emoji: '💎' },
+  { key: 'ton', label: 'Gram', emoji: '💎' },
 ] as const;
 
 export const CURRENCY_ADDRESS_MAP: Record<string, string> = {

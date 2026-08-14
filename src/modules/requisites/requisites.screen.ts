@@ -587,7 +587,7 @@ async activateCard(
   ? '<tg-emoji emoji-id="5990209588018812737">🟢</tg-emoji> Онлайн'
   : '<tg-emoji emoji-id="5987876686337677936">🔴</tg-emoji> Выключена'
 }
-<tg-emoji emoji-id="5411528427817673409">💳</tg-emoji><a href="https://telegra.ph/Instrukciya-po-rabоте-с-P2P-реквизитами-06-29">Обязательно прочитайте рекомендации по работе с OnlyP2P
+<tg-emoji emoji-id="5411528427817673409">💳</tg-emoji><a href="http://telegra.ph/Instrukciya-po-rabote-s-P2P-rekvizitami-07-27">Обязательно прочитайте рекомендации по работе с EpicP2P
 </a>
 `,
 {

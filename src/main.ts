@@ -4,14 +4,25 @@ import { AppModule } from './app.module';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
-  app.enableCors({
-    origin: ['http://localhost:3000', 'https://siteee.wisp.uno'],
-  });
+  const express = app.getHttpAdapter().getInstance();
 
-  await app.listen(3001);
+express.set(
+  'json replacer',
+  (_key: string, value: unknown) =>
+    typeof value === 'bigint' ? value.toString() : value,
+);
 
-  console.log('P2P Exchange Bot is running');
-  console.log('Admin API: http://localhost:3001');
+ app.enableCors({
+  origin: [
+    'http://localhost:3000',
+    'http://151.243.173.85:3000',
+    'https://epic-p2p.online',
+  ],
+});
+
+await app.listen(3001);
+
+console.log('Admin API: http://151.243.173.85:3001');
 }
 
 bootstrap().catch((err) => {

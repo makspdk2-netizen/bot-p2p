@@ -57,7 +57,7 @@ export class DepositScreen {
     ratesBlock = `<blockquote><tg-emoji emoji-id="5379773896352355687">💳</tg-emoji>1 BTC: ${formatRate(rates.btc)} RUB
 <tg-emoji emoji-id="5202064723922670546">💳</tg-emoji>1 LTC: ${formatRate(rates.ltc)} RUB
 <tg-emoji emoji-id="5197434882321567830">💳</tg-emoji>1 USDT: ${formatRate(rates.usdt_trc20)} RUB
-<tg-emoji emoji-id="5377620962390857342">💳</tg-emoji>1 Gramm: ${formatRate(rates.ton)} RUB</blockquote>`;
+<tg-emoji emoji-id="5377620962390857342">💳</tg-emoji>1 Gram: ${formatRate(rates.ton)} RUB</blockquote>`;
   } catch {
     // The deposit screen remains available if the rate provider is temporarily unavailable.
   }

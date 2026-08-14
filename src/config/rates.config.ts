@@ -2,7 +2,7 @@
  * Централизованные настройки курса пополнения.
  * Меняйте значения только здесь — расчёты и сообщения используют их.
  */
-export const COURSE_MARKUP_PERCENT = 5;
+export const COURSE_MARKUP_PERCENT = 1;
 export const USER_BONUS_PERCENT = 7;
 
 export function getUserRateFromApiRate(apiRateRub: number): number {
