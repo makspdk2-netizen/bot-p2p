@@ -1,0 +1,164 @@
+[
+  {
+    "file": "svg/logo-horizontal.svg",
+    "type": "SVG",
+    "size": "вектор",
+    "note": "logo-horizontal.svg"
+  },
+  {
+    "file": "svg/logo-horizontal-white.svg",
+    "type": "SVG",
+    "size": "вектор",
+    "note": "logo-horizontal-white.svg"
+  },
+  {
+    "file": "svg/logo-horizontal-mono.svg",
+    "type": "SVG",
+    "size": "вектор",
+    "note": "logo-horizontal-mono.svg"
+  },
+  {
+    "file": "svg/logo-stacked.svg",
+    "type": "SVG",
+    "size": "вектор",
+    "note": "logo-stacked.svg"
+  },
+  {
+    "file": "svg/logo-icon.svg",
+    "type": "SVG",
+    "size": "вектор",
+    "note": "logo-icon.svg"
+  },
+  {
+    "file": "svg/logo-icon-on-navy.svg",
+    "type": "SVG",
+    "size": "вектор",
+    "note": "logo-icon-on-navy.svg"
+  },
+  {
+    "file": "svg/avatar.svg",
+    "type": "SVG",
+    "size": "вектор",
+    "note": "avatar.svg"
+  },
+  {
+    "file": "svg/favicon.svg",
+    "type": "SVG",
+    "size": "вектор",
+    "note": "favicon.svg"
+  },
+  {
+    "file": "png/logo-horizontal.png",
+    "type": "PNG",
+    "size": "960×192",
+    "note": "logo-horizontal.png"
+  },
+  {
+    "file": "png/logo-horizontal@2x.png",
+    "type": "PNG",
+    "size": "1920×384",
+    "note": "logo-horizontal@2x.png"
+  },
+  {
+    "file": "png/logo-horizontal-sm.png",
+    "type": "PNG",
+    "size": "480×96",
+    "note": "logo-horizontal-sm.png"
+  },
+  {
+    "file": "png/logo-horizontal-white.png",
+    "type": "PNG",
+    "size": "960×192",
+    "note": "logo-horizontal-white.png"
+  },
+  {
+    "file": "png/logo-horizontal-mono.png",
+    "type": "PNG",
+    "size": "960×192",
+    "note": "logo-horizontal-mono.png"
+  },
+  {
+    "file": "png/logo-stacked.png",
+    "type": "PNG",
+    "size": "640×352",
+    "note": "logo-stacked.png"
+  },
+  {
+    "file": "png/logo-icon-512.png",
+    "type": "PNG",
+    "size": "512×512",
+    "note": "logo-icon-512.png"
+  },
+  {
+    "file": "png/logo-icon-256.png",
+    "type": "PNG",
+    "size": "256×256",
+    "note": "logo-icon-256.png"
+  },
+  {
+    "file": "png/logo-icon-128.png",
+    "type": "PNG",
+    "size": "128×128",
+    "note": "logo-icon-128.png"
+  },
+  {
+    "file": "png/logo-icon-on-navy-512.png",
+    "type": "PNG",
+    "size": "512×512",
+    "note": "logo-icon-on-navy-512.png"
+  },
+  {
+    "file": "png/avatar-512.png",
+    "type": "PNG",
+    "size": "512×512",
+    "note": "avatar-512.png"
+  },
+  {
+    "file": "png/avatar-256.png",
+    "type": "PNG",
+    "size": "256×256",
+    "note": "avatar-256.png"
+  },
+  {
+    "file": "png/avatar-128.png",
+    "type": "PNG",
+    "size": "128×128",
+    "note": "avatar-128.png"
+  },
+  {
+    "file": "png/favicon-32.png",
+    "type": "PNG",
+    "size": "32×32",
+    "note": "favicon-32.png"
+  },
+  {
+    "file": "png/favicon-16.png",
+    "type": "PNG",
+    "size": "16×16",
+    "note": "favicon-16.png"
+  },
+  {
+    "file": "png/apple-touch-icon.png",
+    "type": "PNG",
+    "size": "180×180",
+    "note": "apple-touch-icon.png"
+  },
+  {
+    "file": "png/icon-192.png",
+    "type": "PNG",
+    "size": "192×192",
+    "note": "icon-192.png"
+  },
+  {
+    "file": "png/icon-512.png",
+    "type": "PNG",
+    "size": "512×512",
+    "note": "icon-512.png"
+  },
+  {
+    "file": "png/favicon.ico",
+    "type": "ICO",
+    "size": "16/32/48",
+    "note": "favicon для сайта"
+  }
+]
