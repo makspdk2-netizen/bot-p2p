@@ -1,0 +1,387 @@
+[
+  {
+    "path": "01-логотип/logo-full.svg",
+    "category": "Логотип",
+    "title": "Полный логотип (вектор)",
+    "usage": "Шапка сайта, документы, масштабируется без потери качества",
+    "size": "SVG"
+  },
+  {
+    "path": "01-логотип/logo-full.png",
+    "category": "Логотип",
+    "title": "Полный логотип",
+    "usage": "Сайт, презентации",
+    "size": "800×200 px (пропорционально)"
+  },
+  {
+    "path": "01-логотип/logo-full@2x.png",
+    "category": "Логотип",
+    "title": "Retina-версия",
+    "usage": "Экраны высокой плотности",
+    "size": "×2"
+  },
+  {
+    "path": "01-логотип/logo-icon.svg",
+    "category": "Логотип",
+    "title": "Только иконка (вектор)",
+    "usage": "Favicon, приложения, аватары",
+    "size": "SVG"
+  },
+  {
+    "path": "01-логотип/logo-icon.png",
+    "category": "Логотип",
+    "title": "Только иконка",
+    "usage": "Соцсети, favicon PNG",
+    "size": "512×512"
+  },
+  {
+    "path": "01-логотип/logo-full-white.png",
+    "category": "Логотип",
+    "title": "Белая версия",
+    "usage": "Тёмный фон hero, фото",
+    "size": "PNG прозрачный"
+  },
+  {
+    "path": "01-логотип/logo-full-dark.png",
+    "category": "Логотип",
+    "title": "На тёмном фоне",
+    "usage": "Баннеры, stories",
+    "size": "900×220"
+  },
+  {
+    "path": "01-логотип/logo-mono.png",
+    "category": "Логотип",
+    "title": "Монохром",
+    "usage": "Печать в 1 краске, штампы",
+    "size": "PNG"
+  },
+  {
+    "path": "02-сайт/favicon.ico",
+    "category": "Сайт",
+    "title": "Favicon",
+    "usage": "Вкладка браузера — положить в корень сайта",
+    "size": "16/32/48 px"
+  },
+  {
+    "path": "02-сайт/favicon.svg",
+    "category": "Сайт",
+    "title": "Favicon SVG",
+    "usage": "Современные браузеры",
+    "size": "SVG"
+  },
+  {
+    "path": "02-сайт/apple-touch-icon.png",
+    "category": "Сайт",
+    "title": "Apple Touch Icon",
+    "usage": "Иконка на iPhone/iPad при «Добавить на экран»",
+    "size": "180×180"
+  },
+  {
+    "path": "02-сайт/icon-192.png",
+    "category": "Сайт",
+    "title": "PWA иконка",
+    "usage": "Android / PWA",
+    "size": "192×192"
+  },
+  {
+    "path": "02-сайт/icon-512.png",
+    "category": "Сайт",
+    "title": "PWA splash",
+    "usage": "Заставка PWA",
+    "size": "512×512"
+  },
+  {
+    "path": "02-сайт/og-image.jpg",
+    "category": "Сайт",
+    "title": "Open Graph",
+    "usage": "Превью при отправке ссылки в VK/TG/WhatsApp",
+    "size": "1200×630"
+  },
+  {
+    "path": "02-сайт/og-image-square.jpg",
+    "category": "Сайт",
+    "title": "Квадратное превью",
+    "usage": "Instagram, VK посты",
+    "size": "1080×1080"
+  },
+  {
+    "path": "02-сайт/logo-header.png",
+    "category": "Сайт",
+    "title": "Шапка (мобилка)",
+    "usage": "Компактный логотип в header",
+    "size": "240×60"
+  },
+  {
+    "path": "02-сайт/logo-footer.png",
+    "category": "Сайт",
+    "title": "Подвал",
+    "usage": "Footer сайта",
+    "size": "200×50"
+  },
+  {
+    "path": "03-соцсети/vk-avatar.jpg",
+    "category": "Соцсети",
+    "title": "Аватар группы VK",
+    "usage": "VK: Аватар группы VK",
+    "size": "500×500"
+  },
+  {
+    "path": "03-соцсети/vk-cover.jpg",
+    "category": "Соцсети",
+    "title": "Обложка сообщества VK",
+    "usage": "VK: Обложка сообщества VK",
+    "size": "1920×768"
+  },
+  {
+    "path": "03-соцсети/vk-post-template.jpg",
+    "category": "Соцсети",
+    "title": "Шаблон поста (квадрат)",
+    "usage": "VK: Шаблон поста (квадрат)",
+    "size": "1080×1080"
+  },
+  {
+    "path": "03-соцсети/vk-story-template.jpg",
+    "category": "Соцсети",
+    "title": "Шаблон stories (вертикаль)",
+    "usage": "VK Stories: Шаблон stories (вертикаль)",
+    "size": "1080×1920"
+  },
+  {
+    "path": "03-соцсети/telegram-avatar.jpg",
+    "category": "Соцсети",
+    "title": "Аватар канала/бота",
+    "usage": "Telegram: Аватар канала/бота",
+    "size": "512×512"
+  },
+  {
+    "path": "03-соцсети/telegram-post.jpg",
+    "category": "Соцсети",
+    "title": "Картинка поста",
+    "usage": "Telegram: Картинка поста",
+    "size": "1280×720"
+  },
+  {
+    "path": "03-соцсети/whatsapp-avatar.jpg",
+    "category": "Соцсети",
+    "title": "Аватар бизнес-аккаунта",
+    "usage": "WhatsApp: Аватар бизнес-аккаунта",
+    "size": "640×640"
+  },
+  {
+    "path": "03-соцсети/max-avatar.jpg",
+    "category": "Соцсети",
+    "title": "Аватар в Max",
+    "usage": "Max: Аватар в Max",
+    "size": "512×512"
+  },
+  {
+    "path": "03-соцсети/yandex-business-logo.png",
+    "category": "Соцсети",
+    "title": "Логотип профиля",
+    "usage": "Яндекс.Бизнес: Логотип профиля",
+    "size": "600×600"
+  },
+  {
+    "path": "03-соцсети/yandex-business-cover.jpg",
+    "category": "Соцсети",
+    "title": "Обложка профиля",
+    "usage": "Яндекс.Бизнес: Обложка профиля",
+    "size": "1080×720"
+  },
+  {
+    "path": "03-соцсети/yandex-direct-banner.jpg",
+    "category": "Соцсети",
+    "title": "Вертикальный баннер",
+    "usage": "Яндекс.Директ: Вертикальный баннер",
+    "size": "240×400"
+  },
+  {
+    "path": "03-соцсети/yandex-direct-wide.jpg",
+    "category": "Соцсети",
+    "title": "Широкий баннер",
+    "usage": "Яндекс.Директ: Широкий баннер",
+    "size": "1080×607"
+  },
+  {
+    "path": "03-соцсети/avito-logo.png",
+    "category": "Соцсети",
+    "title": "Логотип профиля",
+    "usage": "Avito: Логотип профиля",
+    "size": "200×200"
+  },
+  {
+    "path": "03-соцсети/avito-banner.jpg",
+    "category": "Соцсети",
+    "title": "Баннер профиля",
+    "usage": "Avito: Баннер профиля",
+    "size": "1200×400"
+  },
+  {
+    "path": "04-печать/logo-print.png",
+    "category": "Печать",
+    "title": "Логотип для печати",
+    "usage": "Word, договоры, счета — 300 dpi эквивалент",
+    "size": "3000 px ширина"
+  },
+  {
+    "path": "04-печать/invoice-header.png",
+    "category": "Печать",
+    "title": "Шапка счёта/акта",
+    "usage": "Вставить в шаблон счёта",
+    "size": "3000 px"
+  },
+  {
+    "path": "04-печать/contract-header.png",
+    "category": "Печать",
+    "title": "Шапка договора",
+    "usage": "Вставить в шаблон договора",
+    "size": "3000 px"
+  },
+  {
+    "path": "04-печать/business-card-front.jpg",
+    "category": "Печать",
+    "title": "Визитка — лицо",
+    "usage": "Отдать в типографию (90×50 мм)",
+    "size": "1063×591 px"
+  },
+  {
+    "path": "04-печать/business-card-back.jpg",
+    "category": "Печать",
+    "title": "Визитка — оборот",
+    "usage": "Контакты на обороте",
+    "size": "1063×591 px"
+  },
+  {
+    "path": "04-печать/letterhead-header.jpg",
+    "category": "Печать",
+    "title": "Шапка бланка A4",
+    "usage": "Верхняя часть фирменного бланка",
+    "size": "2480×350"
+  },
+  {
+    "path": "04-печать/stamp-round.png",
+    "category": "Печать",
+    "title": "Круглая печать",
+    "usage": "PNG для документов (прозрачный фон)",
+    "size": "400×400"
+  },
+  {
+    "path": "05-реклама/banner-leaderboard.jpg",
+    "category": "Реклама",
+    "title": "Баннер на сайтах",
+    "usage": "Рекламные материалы",
+    "size": "728×90"
+  },
+  {
+    "path": "05-реклама/banner-rectangle.jpg",
+    "category": "Реклама",
+    "title": "Медийная реклама",
+    "usage": "Рекламные материалы",
+    "size": "300×250"
+  },
+  {
+    "path": "05-реклама/banner-wide.jpg",
+    "category": "Реклама",
+    "title": "Широкий баннер",
+    "usage": "Рекламные материалы",
+    "size": "970×250"
+  },
+  {
+    "path": "05-реклама/banner-mobile.jpg",
+    "category": "Реклама",
+    "title": "Мобильная реклама",
+    "usage": "Рекламные материалы",
+    "size": "320×100"
+  },
+  {
+    "path": "05-реклама/a4-flyer.jpg",
+    "category": "Реклама",
+    "title": "Листовка «Бесплатный замер»",
+    "usage": "Рекламные материалы",
+    "size": "A4"
+  },
+  {
+    "path": "05-реклама/a5-flyer.jpg",
+    "category": "Реклама",
+    "title": "Компактная листовка",
+    "usage": "Рекламные материалы",
+    "size": "A5"
+  },
+  {
+    "path": "05-реклама/vehicle-logo.png",
+    "category": "Реклама",
+    "title": "Логотип на авто",
+    "usage": "Магнит/наклейка на машину (прозрачный PNG)",
+    "size": "1200×400"
+  },
+  {
+    "path": "06-рабочие-материалы/uniform-chest.svg",
+    "category": "Рабочие",
+    "title": "Форма — грудь",
+    "usage": "Печать/вышивка на футболке",
+    "size": "SVG"
+  },
+  {
+    "path": "06-рабочие-материалы/uniform-back.png",
+    "category": "Рабочие",
+    "title": "Форма — спина",
+    "usage": "Крупный логотип на спине",
+    "size": "800×400"
+  },
+  {
+    "path": "06-рабочие-материалы/badge-id.jpg",
+    "category": "Рабочие",
+    "title": "Бейдж сотрудника",
+    "usage": "54×86 мм (пропорция)",
+    "size": "637×1012"
+  },
+  {
+    "path": "06-рабочие-материалы/window-sticker.jpg",
+    "category": "Рабочие",
+    "title": "Наклейка на окно",
+    "usage": "«Сделано ОконФорт» 100×150 мм",
+    "size": "1181×1772"
+  },
+  {
+    "path": "06-рабочие-материалы/warranty-card.jpg",
+    "category": "Рабочие",
+    "title": "Карта гарантии",
+    "usage": "85×55 мм",
+    "size": "1004×649"
+  },
+  {
+    "path": "07-цветовые-версии/full-color.png",
+    "category": "Цветовые версии",
+    "title": "Полноцвет на прозрачном",
+    "usage": "Выберите версию под фон",
+    "size": ""
+  },
+  {
+    "path": "07-цветовые-версии/on-white.jpg",
+    "category": "Цветовые версии",
+    "title": "На белом",
+    "usage": "Выберите версию под фон",
+    "size": ""
+  },
+  {
+    "path": "07-цветовые-версии/on-dark.jpg",
+    "category": "Цветовые версии",
+    "title": "На тёмном #132238",
+    "usage": "Выберите версию под фон",
+    "size": ""
+  },
+  {
+    "path": "07-цветовые-версии/mono.png",
+    "category": "Цветовые версии",
+    "title": "Монохром 1 краска",
+    "usage": "Выберите версию под фон",
+    "size": ""
+  },
+  {
+    "path": "07-цветовые-версии/white.png",
+    "category": "Цветовые версии",
+    "title": "Белая версия",
+    "usage": "Выберите версию под фон",
+    "size": ""
+  }
+]
