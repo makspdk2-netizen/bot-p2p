@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 96" fill="none" aria-label="ОконФорт.рф — окна ПВХ в Иванове">
+
+<style type="text/css">
+  @font-face {
+    font-family: 'UnboundedBrand';
+    src: url('../fonts/Unbounded-Bold.ttf') format('truetype');
+    font-weight: 700;
+  }
+  @font-face {
+    font-family: 'ManropeBrand';
+    src: url('../fonts/Manrope-Medium.ttf') format('truetype');
+    font-weight: 500;
+  }
+  @font-face {
+    font-family: 'ManropeBrand';
+    src: url('../fonts/Manrope-SemiBold.ttf') format('truetype');
+    font-weight: 600;
+  }
+</style>
+
+<rect width="480" height="96" fill="#ffffff"/>
+  <g transform="translate(4,8) scale(1)">
+<g id="okonfort-mark">
+  <rect x="8" y="6" width="56" height="64" rx="1.5" stroke="#0f1b2d" stroke-width="3.5" fill="#ffffff"/>
+  <path d="M8 6 L8 70 L23 61 L23 15 Z" stroke="#0f1b2d" stroke-width="3" fill="#ffffff" stroke-linejoin="round"/>
+  <line x1="8" y1="38" x2="23" y2="38" stroke="#0f1b2d" stroke-width="2.8" stroke-linecap="round"/>
+  <line x1="36" y1="6" x2="36" y2="70" stroke="#0f1b2d" stroke-width="3" stroke-linecap="round"/>
+  <line x1="36" y1="38" x2="64" y2="38" stroke="#0f1b2d" stroke-width="2.8" stroke-linecap="round"/>
+  <rect x="13.5" y="33" width="3.2" height="11" rx="1.2" fill="#0f1b2d"/>
+  <line x1="11" y1="17" x2="18" y2="25" stroke="#0f1b2d" stroke-width="2.2" stroke-linecap="round"/>
+  <line x1="11" y1="47" x2="18" y2="55" stroke="#0f1b2d" stroke-width="2.2" stroke-linecap="round"/>
+  <line x1="42" y1="17" x2="53" y2="27" stroke="#0f1b2d" stroke-width="2.2" stroke-linecap="round"/>
+  <line x1="47" y1="47" x2="58" y2="57" stroke="#0f1b2d" stroke-width="2.2" stroke-linecap="round"/>
+</g>
+</g>
+  <text x="92" y="46" font-family="UnboundedBrand,sans-serif" font-size="32" font-weight="700">
+    <tspan fill="#0f1b2d">ОконФорт</tspan><tspan fill="#0f1b2d">.рф</tspan>
+  </text>
+  <text x="92" y="72" font-family="ManropeBrand,sans-serif" font-size="13" font-weight="500" fill="#0f1b2d" letter-spacing="3.2">окна ПВХ в Иванове</text>
+</svg>
